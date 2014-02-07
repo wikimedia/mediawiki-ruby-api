@@ -1,0 +1,6 @@
+[gerrit]
+host=gerrit.wikimedia.org
+port=29418
+project=mediawiki/ruby_api_client.git
+defaultbranch=master
+defaultrebase=0
