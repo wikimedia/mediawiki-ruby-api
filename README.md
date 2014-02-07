@@ -35,6 +35,10 @@ TODO: Write usage instructions here
     > create_article "username", "password", "title", "content"
     => nil
 
+    > create_user "username", "password"
+    eddfa276bcaabbaec3f813de78f052e3
+    => nil
+
 ## Contributing
 
 1. Fork it ( http://github.com/<my-github-username>/mediawiki_api/fork )

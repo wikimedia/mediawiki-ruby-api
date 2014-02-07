@@ -39,4 +39,26 @@ module MediawikiApi
       $stderr.puts "There was a problem - new article creation was NOT successful."
     end
   end
+  def create_user login, password
+    # First request is solely to obtain a valid token in the API response.
+    createaccount_token_response = RestClient.post ENV["API_URL"], {:action => "createaccount", :name => login, :password =>
+        password, :format => "json", :token => ""}
+
+    # Session cookie needs to be maintained for both API requests.
+    createaccount_token_data = JSON.parse(createaccount_token_response.body)
+    cookie = createaccount_token_response.cookies
+
+    createaccount_token = createaccount_token_data["createaccount"]["token"]
+    puts createaccount_token
+
+    # Second request repeats the first request with the addition of the token.
+    complete_createaccount_response = RestClient.post ENV["API_URL"], {:action => "createaccount", :name => login, :password => password, :format => "json", :token => createaccount_token}, {:cookies => cookie}
+
+    complete_createaccount_data = JSON.parse(complete_createaccount_response.body)
+    complete_createaccount_status = complete_createaccount_data["createaccount"]["result"]
+
+    if (complete_createaccount_status != "success")
+      $stderr.puts "There was a problem - new user account creation was NOT successful."
+    end
+  end
 end
