@@ -2,6 +2,8 @@
 
 TODO: Write a gem description
 
+An easy way to work with MediaWiki API from Ruby. Uses REST Client Ruby gem to communicate with MediaWiki API.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -19,6 +21,19 @@ Or install it yourself as:
 ## Usage
 
 TODO: Write usage instructions here
+
+    $ export API_URL=http://en.wikipedia.beta.wmflabs.org/w/api.php
+
+    $ irb
+
+    > require "mediawiki_api"
+    => true
+
+    > include MediawikiApi
+    => Object
+
+    > create_article "username", "password", "title", "content"
+    => nil
 
 ## Contributing
 
