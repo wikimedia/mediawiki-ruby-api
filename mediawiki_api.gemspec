@@ -6,8 +6,8 @@ require "mediawiki_api/version"
 Gem::Specification.new do |spec|
   spec.name          = "mediawiki_api"
   spec.version       = MediawikiApi::VERSION
-  spec.authors       = ["Chris McMahon", "Jeff Hall", "Zeljko Filipin"]
-  spec.email         = ["cmcmahon@wikimedia.org", "jhall@wikimedia.org", "zeljko.filipin@gmail.com"]
+  spec.authors       = ["Amir Aharoni", "Chris McMahon", "Jeff Hall", "Zeljko Filipin"]
+  spec.email         = ["amir.aharoni@mail.huji.ac.il", "cmcmahon@wikimedia.org", "jhall@wikimedia.org", "zeljko.filipin@gmail.com"]
   spec.summary       = %q{An easy way to work with MediaWiki API from Ruby.}
   spec.description   = %q{Uses REST Client Ruby gem to communicate with MediaWiki API.}
   spec.homepage      = "https://github.com/zeljkofilipin/mediawiki_api"
