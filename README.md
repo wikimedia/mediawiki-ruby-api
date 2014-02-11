@@ -35,6 +35,9 @@ TODO: Write usage instructions here
     > create_article "username", "password", "title", "content"
     => nil
 
+    > delete_article "username", "password", "title"
+    => nil
+
     > create_user "username", "password"
     eddfa276bcaabbaec3f813de78f052e3
     => nil

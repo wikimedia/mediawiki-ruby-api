@@ -39,6 +39,67 @@ module MediawikiApi
       $stderr.puts "There was a problem - new article creation was NOT successful."
     end
   end
+
+  def delete_article username, password, title
+    unless (ENV["API_URL"])
+      puts "API_URL is not defined - make sure to export a value for that variable before running this test."
+    end
+
+    # First request is solely to obtain a valid login token in the API response.
+    login_token_response = RestClient.post ENV["API_URL"], {
+        "format" => "json",
+        "action" => "login",
+        "lgname" => username,
+        "lgpassword" => password,
+    }
+
+    login_token_data = JSON.parse(login_token_response.body)
+    login_token = login_token_data["login"]["token"]
+    cookie = login_token_response.cookies
+
+    # Second request repeats the first request with the addition of the token (to complete the login).
+    complete_login_response = RestClient.post ENV["API_URL"], {
+      "format" => "json",
+      "action" => "login",
+      "lgname" => username,
+      "lgpassword" => password,
+      "lgtoken" => login_token},
+      {:cookies => cookie}
+
+    complete_login_data = JSON.parse(complete_login_response.body)
+    complete_login_status = complete_login_data["login"]["result"]
+
+    if (complete_login_status != "Success")
+      puts "There was a problem - login was NOT successful."
+    end
+
+    # First request is solely to obtain a valid delete token in the API response.
+    delete_token_response = RestClient.post ENV["API_URL"], {
+      "format" => "json",
+      "action" => "tokens",
+      "type" => "delete",
+    },
+      {:cookies => cookie}
+
+    delete_token_data = JSON.parse(delete_token_response.body)
+    delete_token = delete_token_data["tokens"]["deletetoken"]
+
+    # Second request repeats the first request
+    # with the addition of the token (to complete the article creation).
+    complete_delete_response = RestClient.post ENV["API_URL"], {
+      "format" => "json",
+      "action" => "delete",
+      "title" => title,
+      "token" => delete_token,
+      "reason" => "Deleted by browser tests",
+    },
+      {:cookies => cookie}
+
+    complete_delete_data = JSON.parse(complete_delete_response.body)
+
+    p complete_delete_data if complete_delete_data["error"]
+  end
+
   def create_user login, password
     # First request is solely to obtain a valid token in the API response.
     createaccount_token_response = RestClient.post ENV["API_URL"], {:action => "createaccount", :name => login, :password =>
