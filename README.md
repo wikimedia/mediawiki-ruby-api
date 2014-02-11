@@ -1,8 +1,7 @@
 # MediawikiApi
 
-TODO: Write a gem description
-
-An easy way to work with MediaWiki API from Ruby. Uses REST Client Ruby gem to communicate with MediaWiki API.
+A library for interacting with MediaWiki API from Ruby. Uses adapter-agnostic
+Faraday gem to talk to the API.
 
 ## Installation
 
@@ -20,27 +19,13 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require "mediawiki_api"
 
-    $ export API_URL=http://en.wikipedia.beta.wmflabs.org/w/api.php
-
-    $ irb
-
-    > require "mediawiki_api"
-    => true
-
-    > include MediawikiApi
-    => Object
-
-    > create_article "username", "password", "title", "content"
-    => nil
-
-    > delete_article "username", "password", "title"
-    => nil
-
-    > create_user "username", "password"
-    eddfa276bcaabbaec3f813de78f052e3
-    => nil
+client = MediawikiApi::Client.new("http://127.0.0.1/w/api.php")
+client.log_in("username", "pass")
+client.create_page("Test api", "lalala '''test'''")
+```
 
 ## Contributing
 
