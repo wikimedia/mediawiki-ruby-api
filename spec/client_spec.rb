@@ -83,4 +83,21 @@ describe MediawikiApi::Client do
       it "returns a MediawikiApi::Page"
     end
   end
+
+  describe "#delete_page" do
+    before do
+      stub_request(:get, api_url).
+        with(query: { format: "json", action: "tokens", type: "delete" }).
+        to_return(body: { tokens: { deletetoken: "t123" } }.to_json )
+      @delete_req = stub_request(:post, api_url).
+        with(body: { format: "json", action: "delete", title: "Test", reason: "deleting", token: "t123" })
+    end
+
+    it "deletes a page using a delete token" do
+      subject.delete_page("Test", "deleting")
+      @delete_req.should have_been_requested
+    end
+
+    # evaluate results
+  end
 end

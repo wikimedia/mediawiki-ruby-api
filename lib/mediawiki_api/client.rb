@@ -6,6 +6,9 @@ module MediawikiApi
   class LoginError < StandardError
   end
 
+  class TokenError < StandardError
+  end
+
   class Client
     attr_accessor :logged_in
 
@@ -41,11 +44,21 @@ module MediawikiApi
       resp = @conn.post "", { action: "edit", title: title, text: content, token: token, format: "json" }
     end
 
+    def delete_page(title, reason)
+      token = get_token "delete"
+      resp = @conn.post "", { action: "delete", title: title, reason: reason, token: token, format: "json" }
+    end
+
     protected
 
     def get_token(type)
       resp = @conn.get "", { action: "tokens", type: type, format: "json" }
-      JSON.parse(resp.body)["tokens"]["edittoken"]
+      token_data = JSON.parse(resp.body)
+      if token_data.has_key?("warnings")
+        raise TokenError, token_data["warnings"]
+      else
+        token_data["tokens"][type + "token"]
+      end
     end
   end
 end
