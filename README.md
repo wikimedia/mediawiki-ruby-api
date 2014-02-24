@@ -25,6 +25,7 @@ require "mediawiki_api"
 client = MediawikiApi::Client.new("http://127.0.0.1/w/api.php")
 client.log_in("username", "pass")
 client.create_page("Test api", "lalala '''test'''")
+client.delete_page("Test api", "reason for deleting")
 ```
 
 ## Contributing
