@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe MediawikiApi::Client do
   subject { MediawikiApi::Client.new(api_url) }
+  body_base = { cookieprefix: "prefix", sessionid: "123" }
 
   describe "#log_in" do
-    body_base = { cookieprefix: "prefix", sessionid: "123" }
 
     it "logs in when API returns Success" do
       stub_request(:post, api_url).
@@ -99,5 +99,56 @@ describe MediawikiApi::Client do
     end
 
     # evaluate results
+  end
+
+  describe "#create_account" do
+    it "creates an account when API returns Success" do
+      stub_request(:post, api_url).
+        with(body: { format: "json", action: "createaccount", name: "Test", password: "qwe123" }).
+        to_return(body: { createaccount: body_base.merge({ result: "Success" }) }.to_json )
+
+      subject.create_account("Test", "qwe123").should be true
+    end
+
+    context "when API returns NeedToken" do
+      before do
+        headers = { "Set-Cookie" => "prefixSession=789; path=/; domain=localhost; HttpOnly" }
+
+        stub_request(:post, api_url).
+          with(body: { format: "json", action: "createaccount", name: "Test", password: "qwe123" }).
+          to_return(
+            body: { createaccount: body_base.merge({ result: "NeedToken", token: "456" }) }.to_json,
+            headers: { "Set-Cookie" => "prefixSession=789; path=/; domain=localhost; HttpOnly" }
+          )
+
+        @success_req = stub_request(:post, api_url).
+          with(body: { format: "json", action: "createaccount", name: "Test", password: "qwe123", token: "456" }).
+          with(headers: { "Cookie" => "prefixSession=789" }).
+          to_return(body: { createaccount: body_base.merge({ result: "Success" }) }.to_json )
+      end
+
+      it "creates an account" do
+        subject.create_account("Test", "qwe123").should be true
+      end
+
+      it "sends second request with token and cookies" do
+        subject.create_account "Test", "qwe123"
+        @success_req.should have_been_requested
+      end
+    end
+
+    # docs don't specify other results, but who knows
+    # http://www.mediawiki.org/wiki/API:Account_creation
+    context "when API returns neither Success nor NeedToken" do
+      before do
+        stub_request(:post, api_url).
+          with(body: { format: "json", action: "createaccount", name: "Test", password: "qwe123" }).
+          to_return(body: { createaccount: body_base.merge({ result: "WhoKnows" }) }.to_json )
+      end
+
+      it "raises error with proper message" do
+        expect { subject.create_account "Test", "qwe123" }.to raise_error MediawikiApi::CreateAccountError, "WhoKnows"
+      end
+    end
   end
 end

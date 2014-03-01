@@ -6,6 +6,9 @@ module MediawikiApi
   class LoginError < StandardError
   end
 
+  class CreateAccountError < StandardError
+  end
+
   class TokenError < StandardError
   end
 
@@ -36,6 +39,23 @@ module MediawikiApi
         log_in username, password, data["token"]
       else
         raise LoginError, data["result"]
+      end
+    end
+
+    def create_account(username, password, token = nil)
+      params = { action: "createaccount", name: username, password: password, format: "json" }
+      params[:token] = token unless token.nil?
+      resp = @conn.post "", params
+
+      data = JSON.parse(resp.body)["createaccount"]
+
+      case data["result"]
+      when "Success"
+        @logged_in = true
+      when "NeedToken"
+        create_account username, password, data["token"]
+      else
+        raise CreateAccountError, data["result"]
       end
     end
 
