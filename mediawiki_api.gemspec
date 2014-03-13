@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["amir.aharoni@mail.huji.ac.il", "cmcmahon@wikimedia.org", "jhall@wikimedia.org", "jgonera@wikimedia.org", "zeljko.filipin@gmail.com"]
   spec.summary       = %q{A library for interacting with MediaWiki API from Ruby.}
   spec.description   = %q{Uses adapter-agnostic Faraday gem to talk to the API.}
-  spec.homepage      = "https://github.com/zeljkofilipin/mediawiki_api"
+  spec.homepage      = "https://github.com/wikimedia/mediawiki-ruby-api"
   spec.license       = "GPL-2"
 
   spec.files         = `git ls-files`.split($/)
