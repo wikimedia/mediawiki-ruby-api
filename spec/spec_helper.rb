@@ -1,6 +1,6 @@
-require 'webmock/rspec'
-require 'json'
-require 'mediawiki_api'
+require "webmock/rspec"
+require "json"
+require "mediawiki_api"
 
 module TestHelpers
   def api_url

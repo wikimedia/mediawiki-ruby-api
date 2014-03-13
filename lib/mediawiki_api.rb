@@ -1,1 +1,1 @@
-require 'mediawiki_api/client'
+require "mediawiki_api/client"

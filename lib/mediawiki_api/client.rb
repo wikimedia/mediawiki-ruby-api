@@ -1,6 +1,6 @@
-require 'faraday'
-require 'faraday-cookie_jar'
-require 'json'
+require "faraday"
+require "faraday-cookie_jar"
+require "json"
 
 module MediawikiApi
   class LoginError < StandardError

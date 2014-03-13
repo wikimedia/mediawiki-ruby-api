@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe MediawikiApi::Client do
   subject { MediawikiApi::Client.new(api_url) }
