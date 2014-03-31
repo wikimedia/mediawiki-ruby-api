@@ -1,4 +1,4 @@
-# MediawikiApi
+# MediaWiki API
 
 A library for interacting with MediaWiki API from Ruby. Uses adapter-agnostic
 Faraday gem to talk to the API.
@@ -23,10 +23,16 @@ Or install it yourself as:
 require "mediawiki_api"
 
 client = MediawikiApi::Client.new("http://127.0.0.1/w/api.php")
-client.log_in("username", "pass")
-client.create_page("Test api", "lalala '''test'''")
-client.delete_page("Test api", "reason for deleting")
+client.create_account("username", "password")
+client.log_in("username", "password")
+client.create_page("title", "content")
+client.delete_page("title", "reason")
 ```
+
+## Links
+
+MediaWiki API gem at: [Gerrit](https://gerrit.wikimedia.org/r/#/admin/projects/mediawiki/ruby/api), [GitHub](https://github.com/wikimedia/mediawiki-ruby-api), [RubyGems](https://rubygems.org/gems/mediawiki_api), [Code Climate](https://codeclimate.com/github/wikimedia/mediawiki-ruby-api).
+
 
 ## Contributing
 
