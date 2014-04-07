@@ -15,10 +15,12 @@ module MediawikiApi
   class Client
     attr_accessor :logged_in
 
-    def initialize(url)
+    def initialize(url, log=false)
       @conn = Faraday.new(url: url) do |faraday|
         faraday.request :url_encoded
-        faraday.response :logger
+        if log then
+          faraday.response :logger
+        end
         faraday.use :cookie_jar
         faraday.adapter Faraday.default_adapter
       end
@@ -67,6 +69,10 @@ module MediawikiApi
     def delete_page(title, reason)
       token = get_token "delete"
       resp = @conn.post "", { action: "delete", title: title, reason: reason, token: token, format: "json" }
+    end
+
+    def get_wikitext(title)
+      resp = @conn.get "/w/index.php", { action: "raw", title: title }
     end
 
     protected

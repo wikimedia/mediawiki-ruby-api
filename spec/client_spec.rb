@@ -101,6 +101,17 @@ describe MediawikiApi::Client do
     # evaluate results
   end
 
+  describe "#get_wikitext" do
+    before do
+      @get_req = stub_request(:get, index_url).with(query: { action: "raw", title: "Test" })
+    end
+
+    it "fetches a page" do
+      subject.get_wikitext("Test")
+      @get_req.should have_been_requested
+    end
+  end
+
   describe "#create_account" do
     it "creates an account when API returns Success" do
       stub_request(:post, api_url).
