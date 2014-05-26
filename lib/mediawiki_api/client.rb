@@ -27,6 +27,10 @@ module MediawikiApi
       @logged_in = false
     end
 
+    def default_params
+      { format: 'json' }
+    end
+
     def log_in(username, password, token = nil)
       params = { action: "login", lgname: username, lgpassword: password, format: "json" }
       params[:lgtoken] = token unless token.nil?
@@ -75,7 +79,24 @@ module MediawikiApi
       resp = @conn.get "/w/index.php", { action: "raw", title: title }
     end
 
+    def revisions(title, options={})
+      revisions_params = {
+        titles: title,
+        rvprop: 'timestamp|user|comment',
+        prop: 'revisions',
+        rvlimit: 50
+      }
+      params = revisions_params.merge(options)
+      query(params)
+    end
+
     protected
+
+    def query(params)
+      params.merge!(default_params)
+      params[:action] = 'query'
+      resp = @conn.post "", params
+    end
 
     def get_token(type)
       resp = @conn.get "", { action: "tokens", type: type, format: "json" }
