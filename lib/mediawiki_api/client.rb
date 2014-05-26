@@ -15,8 +15,8 @@ module MediawikiApi
   class Client
     attr_accessor :logged_in
 
-    def initialize(url, log=false)
-      @conn = Faraday.new(url: url) do |faraday|
+    def initialize(url, log=false, proxy=nil )
+      @conn = Faraday.new(url: url, proxy: proxy) do |faraday|
         faraday.request :url_encoded
         if log then
           faraday.response :logger
