@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mediawiki_api (0.1.1)
+    mediawiki_api (0.1.2)
       faraday (~> 0.9, >= 0.9.0)
       faraday-cookie_jar (~> 0.0, >= 0.0.6)
 

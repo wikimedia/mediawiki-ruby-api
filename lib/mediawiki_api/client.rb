@@ -17,6 +17,7 @@ module MediawikiApi
 
     def initialize(url, log=false)
       @conn = Faraday.new(url: url) do |faraday|
+        faraday.request :multipart
         faraday.request :url_encoded
         if log then
           faraday.response :logger
@@ -69,6 +70,11 @@ module MediawikiApi
     def delete_page(title, reason)
       token = get_token "delete"
       resp = @conn.post "", { action: "delete", title: title, reason: reason, token: token, format: "json" }
+    end
+
+    def upload_image(filename ,path , comment, ignorewarnings)
+      token = get_token "edit"
+      @conn.post "", { action: "upload", filename: filename, file: Faraday::UploadIO.new(path, 'image/png'), token: token, comment: comment, ignorewarnings: ignorewarnings, format: "json"}
     end
 
     def get_wikitext(title)
