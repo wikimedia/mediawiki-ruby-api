@@ -27,6 +27,7 @@ client.create_account("username", "password")
 client.log_in("username", "password")
 client.create_page("title", "content")
 client.delete_page("title", "reason")
+client.protect_page("title", "reason", "edit=sysop|move=sysop")
 ```
 
 ## Links

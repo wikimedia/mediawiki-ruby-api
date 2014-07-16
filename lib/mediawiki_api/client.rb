@@ -64,12 +64,12 @@ module MediawikiApi
 
     def create_page(title, content)
       token = get_token "edit"
-      resp = @conn.post "", { action: "edit", title: title, text: content, token: token, format: "json" }
+      @conn.post "", { action: "edit", title: title, text: content, token: token, format: "json" }
     end
 
     def delete_page(title, reason)
       token = get_token "delete"
-      resp = @conn.post "", { action: "delete", title: title, reason: reason, token: token, format: "json" }
+      @conn.post "", { action: "delete", title: title, reason: reason, token: token, format: "json" }
     end
 
     def upload_image(filename ,path , comment, ignorewarnings)
@@ -78,7 +78,12 @@ module MediawikiApi
     end
 
     def get_wikitext(title)
-      resp = @conn.get "/w/index.php", { action: "raw", title: title }
+      @conn.get "/w/index.php", { action: "raw", title: title }
+    end
+
+    def protect_page(title, reason, protections="edit=sysop|move=sysop")
+      token = get_token "protect"
+      @conn.post "", { action: "protect", title: title, reason: reason, token: token, format: "json", protections: protections}
     end
 
     protected
