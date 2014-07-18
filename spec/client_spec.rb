@@ -12,7 +12,7 @@ describe MediawikiApi::Client do
         to_return(body: { login: body_base.merge({ result: "Success" }) }.to_json )
 
       subject.log_in "Test", "qwe123"
-      subject.logged_in.should be true
+      expect(subject.logged_in).to be true
     end
 
     context "when API returns NeedToken" do
@@ -34,12 +34,12 @@ describe MediawikiApi::Client do
 
       it "logs in" do
         subject.log_in "Test", "qwe123"
-        subject.logged_in.should be true
+        expect(subject.logged_in).to be true
       end
 
       it "sends second request with token and cookies" do
         subject.log_in "Test", "qwe123"
-        @success_req.should have_been_requested
+        expect(@success_req).to have_been_requested
       end
     end
 
@@ -52,7 +52,7 @@ describe MediawikiApi::Client do
 
       it "does not log in" do
         expect { subject.log_in "Test", "qwe123" }.to raise_error
-        subject.logged_in.should be false
+        expect(subject.logged_in).to be false
       end
 
       it "raises error with proper message" do
@@ -72,7 +72,7 @@ describe MediawikiApi::Client do
 
     it "creates a page using an edit token" do
       subject.create_page("Test", "test123")
-      @edit_req.should have_been_requested
+      expect(@edit_req).to have_been_requested
     end
 
     context "when API returns Success" do
@@ -95,7 +95,7 @@ describe MediawikiApi::Client do
 
     it "deletes a page using a delete token" do
       subject.delete_page("Test", "deleting")
-      @delete_req.should have_been_requested
+      expect(@delete_req).to have_been_requested
     end
 
     # evaluate results
@@ -108,7 +108,7 @@ describe MediawikiApi::Client do
 
     it "fetches a page" do
       subject.get_wikitext("Test")
-      @get_req.should have_been_requested
+      expect(@get_req).to have_been_requested
     end
   end
 
@@ -118,7 +118,7 @@ describe MediawikiApi::Client do
         with(body: { format: "json", action: "createaccount", name: "Test", password: "qwe123" }).
         to_return(body: { createaccount: body_base.merge({ result: "Success" }) }.to_json )
 
-      subject.create_account("Test", "qwe123").should be true
+      expect(subject.create_account("Test", "qwe123")).to be true
     end
 
     context "when API returns NeedToken" do
@@ -139,12 +139,12 @@ describe MediawikiApi::Client do
       end
 
       it "creates an account" do
-        subject.create_account("Test", "qwe123").should be true
+        expect(subject.create_account("Test", "qwe123")).to be true
       end
 
       it "sends second request with token and cookies" do
         subject.create_account "Test", "qwe123"
-        @success_req.should have_been_requested
+        expect(@success_req).to have_been_requested
       end
     end
 
