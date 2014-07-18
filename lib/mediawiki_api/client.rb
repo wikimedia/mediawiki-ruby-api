@@ -15,13 +15,11 @@ module MediawikiApi
   class Client
     attr_accessor :logged_in
 
-    def initialize(url, log=false)
+    def initialize(url, log = false)
       @conn = Faraday.new(url: url) do |faraday|
         faraday.request :multipart
         faraday.request :url_encoded
-        if log then
-          faraday.response :logger
-        end
+        faraday.response :logger if log
         faraday.use :cookie_jar
         faraday.adapter Faraday.default_adapter
       end
@@ -64,17 +62,17 @@ module MediawikiApi
 
     def create_page(title, content)
       token = get_token "edit"
-      @conn.post "", { action: "edit", title: title, text: content, token: token, format: "json" }
+      @conn.post "", action: "edit", title: title, text: content, token: token, format: "json"
     end
 
     def delete_page(title, reason)
       token = get_token "delete"
-      @conn.post "", { action: "delete", title: title, reason: reason, token: token, format: "json" }
+      @conn.post "", action: "delete", title: title, reason: reason, token: token, format: "json"
     end
 
-    def upload_image(filename ,path , comment, ignorewarnings)
+    def upload_image(filename, path, comment, ignorewarnings)
       token = get_token "edit"
-      @conn.post "", { action: "upload", filename: filename, file: Faraday::UploadIO.new(path, 'image/png'), token: token, comment: comment, ignorewarnings: ignorewarnings, format: "json"}
+      @conn.post "", action: "upload", filename: filename, file: Faraday::UploadIO.new(path, 'image/png'), token: token, comment: comment, ignorewarnings: ignorewarnings, format: "json"
     end
 
     def get_wikitext(title)
@@ -83,7 +81,7 @@ module MediawikiApi
 
     def protect_page(title, reason, protections="edit=sysop|move=sysop")
       token = get_token "protect"
-      @conn.post "", { action: "protect", title: title, reason: reason, token: token, format: "json", protections: protections}
+      @conn.post "", action: "protect", title: title, reason: reason, token: token, format: "json", protections: protections
     end
 
     protected

@@ -1,4 +1,4 @@
-#ruby=ruby-2.1.1
+#ruby=ruby-2.1.2
 #ruby-gemset=mediawiki_api
 
 source "https://rubygems.org"
