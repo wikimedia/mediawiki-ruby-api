@@ -1,5 +1,4 @@
 require "mediawiki_api"
-require "json"
 require "webmock/rspec"
 
 describe MediawikiApi::Client do
