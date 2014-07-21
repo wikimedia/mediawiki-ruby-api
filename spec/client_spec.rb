@@ -1,6 +1,11 @@
-require "spec_helper"
+require "mediawiki_api"
+require "json"
+require "webmock/rspec"
 
 describe MediawikiApi::Client do
+  let(:api_url) { "http://localhost/api.php" }
+  let(:index_url) { "http://localhost/w/index.php" }
+
   subject { MediawikiApi::Client.new(api_url) }
   body_base = { cookieprefix: "prefix", sessionid: "123" }
 
