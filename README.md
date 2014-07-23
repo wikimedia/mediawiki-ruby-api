@@ -49,7 +49,7 @@ MediaWiki API gem at: [Gerrit](https://gerrit.wikimedia.org/r/#/admin/projects/m
 
 ## Release notes
 
-### 0.1.4 2014-07-??
+### 0.1.4 2014-07-18
 
 - Added MediawikiApi::Client#protect_page.
 - Updated documentation.
