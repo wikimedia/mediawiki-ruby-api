@@ -2,17 +2,12 @@ require "faraday"
 require "faraday-cookie_jar"
 require "json"
 
+require "mediawiki_api/exceptions"
+
 module MediawikiApi
-  class LoginError < StandardError
-  end
-
-  class CreateAccountError < StandardError
-  end
-
-  class TokenError < StandardError
-  end
-
   class Client
+    FORMAT = "json"
+
     attr_accessor :logged_in
 
     def initialize(url, log = false)
@@ -24,10 +19,11 @@ module MediawikiApi
         faraday.adapter Faraday.default_adapter
       end
       @logged_in = false
+      @tokens = {}
     end
 
     def log_in(username, password, token = nil)
-      params = { action: "login", lgname: username, lgpassword: password, format: "json" }
+      params = { action: "login", lgname: username, lgpassword: password, format: FORMAT }
       params[:lgtoken] = token unless token.nil?
       resp = @conn.post "", params
 
@@ -36,6 +32,7 @@ module MediawikiApi
       case data["result"]
       when "Success"
         @logged_in = true
+        @tokens.clear
       when "NeedToken"
         log_in username, password, data["token"]
       else
@@ -44,7 +41,7 @@ module MediawikiApi
     end
 
     def create_account(username, password, token = nil)
-      params = { action: "createaccount", name: username, password: password, format: "json" }
+      params = { action: "createaccount", name: username, password: password, format: FORMAT }
       params[:token] = token unless token.nil?
       resp = @conn.post "", params
 
@@ -61,39 +58,49 @@ module MediawikiApi
     end
 
     def create_page(title, content)
-      token = get_token "edit"
-      @conn.post "", action: "edit", title: title, text: content, token: token, format: "json"
+      action("edit", title: title, text: content)
     end
 
     def delete_page(title, reason)
-      token = get_token "delete"
-      @conn.post "", action: "delete", title: title, reason: reason, token: token, format: "json"
+      action("delete", title: title, reason: reason)
     end
 
     def upload_image(filename, path, comment, ignorewarnings)
-      token = get_token "edit"
-      @conn.post "", action: "upload", filename: filename, file: Faraday::UploadIO.new(path, 'image/png'), token: token, comment: comment, ignorewarnings: ignorewarnings, format: "json"
+      file = Faraday::UploadIO.new(path, "image/png")
+      action("upload", token_type: "edit", filename: filename, file: file, comment: comment, ignorewarnings: ignorewarnings)
     end
 
     def get_wikitext(title)
       @conn.get "/w/index.php", { action: "raw", title: title }
     end
 
-    def protect_page(title, reason, protections="edit=sysop|move=sysop")
-      token = get_token "protect"
-      @conn.post "", action: "protect", title: title, reason: reason, token: token, format: "json", protections: protections
+    def protect_page(title, reason, protections = "edit=sysop|move=sysop")
+      action("protect", title: title, reason: reason, protections: protections)
     end
 
     protected
 
-    def get_token(type)
-      resp = @conn.get "", { action: "tokens", type: type, format: "json" }
-      token_data = JSON.parse(resp.body)
-      if token_data.has_key?("warnings")
-        raise TokenError, token_data["warnings"]
-      else
-        token_data["tokens"][type + "token"]
+    def action(name, options = {})
+      options[:token] = get_token(options.delete(:token_type) || name)
+
+      @conn.post("", options.merge(action: name, format: FORMAT)).tap do |response|
+        if response.headers.include?("mediawiki-api-error")
+          raise ApiError.new(JSON.parse(response.body)["error"])
+        end
       end
+    end
+
+    def get_token(type)
+      unless @tokens.include?(type)
+        resp = @conn.get "", { action: "tokens", type: type, format: FORMAT }
+        token_data = JSON.parse(resp.body)
+
+        raise TokenError, token_data["warnings"] if token_data.include?("warnings")
+
+        @tokens[type] = token_data["tokens"][type + "token"]
+      end
+
+      @tokens[type]
     end
   end
 end
