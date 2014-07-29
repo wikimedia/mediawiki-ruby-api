@@ -166,4 +166,34 @@ describe MediawikiApi::Client do
       end
     end
   end
+
+  describe "#watch_page" do
+    before do
+      stub_request(:get, api_url).
+        with(query: { format: "json", action: "tokens", type: "watch" }).
+        to_return(body: { tokens: { watchtoken: "t123" } }.to_json )
+      @watch_req = stub_request(:post, api_url).
+        with(body: { format: "json", token: "t123", action: "watch", titles: "Test" })
+    end
+
+    it "sends a valid watch request" do
+      subject.watch_page("Test")
+      expect(@watch_req).to have_been_requested
+    end
+  end
+
+  describe "#unwatch_page" do
+    before do
+      stub_request(:get, api_url).
+        with(query: { format: "json", action: "tokens", type: "watch" }).
+        to_return(body: { tokens: { watchtoken: "t123" } }.to_json )
+      @watch_req = stub_request(:post, api_url).
+        with(body: { format: "json", token: "t123", action: "watch", titles: "Test", unwatch: "true" })
+    end
+
+    it "sends a valid unwatch request" do
+      subject.unwatch_page("Test")
+      expect(@watch_req).to have_been_requested
+    end
+  end
 end

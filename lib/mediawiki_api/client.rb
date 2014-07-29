@@ -78,10 +78,19 @@ module MediawikiApi
       action("protect", title: title, reason: reason, protections: protections)
     end
 
+    def watch_page(title)
+      action("watch", titles: title)
+    end
+
+    def unwatch_page(title)
+      action("watch", titles: title, unwatch: true)
+    end
+
     protected
 
     def action(name, options = {})
       options[:token] = get_token(options.delete(:token_type) || name)
+      options[:titles] = Array(options[:titles]).join("|") if options.include?(:titles)
 
       @conn.post("", options.merge(action: name, format: FORMAT)).tap do |response|
         if response.headers.include?("mediawiki-api-error")
