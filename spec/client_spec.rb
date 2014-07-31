@@ -1,4 +1,4 @@
-require "mediawiki_api"
+require "spec_helper"
 require "webmock/rspec"
 
 describe MediawikiApi::Client do
@@ -37,12 +37,15 @@ describe MediawikiApi::Client do
       end
 
       it "logs in" do
-        subject.log_in "Test", "qwe123"
+        response = subject.log_in("Test", "qwe123")
+
+        expect(response).to include("result" => "Success")
         expect(subject.logged_in).to be true
       end
 
       it "sends second request with token and cookies" do
-        subject.log_in "Test", "qwe123"
+        response = subject.log_in("Test", "qwe123")
+
         expect(@success_req).to have_been_requested
       end
     end
@@ -77,14 +80,6 @@ describe MediawikiApi::Client do
     it "creates a page using an edit token" do
       subject.create_page("Test", "test123")
       expect(@edit_req).to have_been_requested
-    end
-
-    context "when API returns Success" do
-      before do
-        @edit_req.to_return(body: { result: "Success" }.to_json )
-      end
-
-      it "returns a MediawikiApi::Page"
     end
   end
 
@@ -122,7 +117,7 @@ describe MediawikiApi::Client do
         with(body: { format: "json", action: "createaccount", name: "Test", password: "qwe123" }).
         to_return(body: { createaccount: body_base.merge({ result: "Success" }) }.to_json )
 
-      expect(subject.create_account("Test", "qwe123")).to be true
+      expect(subject.create_account("Test", "qwe123")).to include("result" => "Success")
     end
 
     context "when API returns NeedToken" do
@@ -143,7 +138,7 @@ describe MediawikiApi::Client do
       end
 
       it "creates an account" do
-        expect(subject.create_account("Test", "qwe123")).to be true
+        expect(subject.create_account("Test", "qwe123")).to include("result" => "Success")
       end
 
       it "sends second request with token and cookies" do
