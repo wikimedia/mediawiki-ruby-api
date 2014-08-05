@@ -15,7 +15,7 @@ module MediawikiApi
     end
 
     def to_s
-      "#{self.class.name}: #{info} (#{code})"
+      "#{info} (#{code})"
     end
 
     private

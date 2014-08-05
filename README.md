@@ -32,7 +32,16 @@ client.get_wikitext "title"
 client.protect_page "title", "reason", "protections" #  protections are optional, default is "edit=sysop|move=sysop"
 client.delete_page "title", "reason"
 client.upload_image "filename", "path", "comment", "ignorewarnings"
+client.meta :siteinfo, siprop: "extensions"
+client.prop :info, titles: "Some page"
+client.query titles: ["Some page", "Some other page"]
 ```
+
+## Advanced Usage
+
+Any API action can be requested using `#action`. See the
+[MediaWiki API documentation](http://www.mediawiki.org/wiki/API) for supported
+actions and parameters.
 
 ## Links
 

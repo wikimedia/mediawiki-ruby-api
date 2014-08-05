@@ -25,6 +25,25 @@ module MediawikiApi
       @tokens = {}
     end
 
+    def action(name, params = {})
+      name = name.to_s
+
+      method = params.delete(:http_method) || :post
+      token_type = params.delete(:token_type)
+      envelope = (params.delete(:envelope) || [name]).map(&:to_s)
+
+      params[:token] = get_token(token_type || name) unless token_type == false
+      params = compile_parameters(params)
+
+      response = @conn.send(method, "", params.merge(action: name, format: FORMAT))
+
+      if response.headers.include?("mediawiki-api-error")
+        raise ApiError.new(Response.new(response, ["error"]))
+      end
+
+      Response.new(response, envelope)
+    end
+
     def create_account(username, password, token = nil)
       params = { name: username, password: password, token_type: false }
       params[:token] = token unless token.nil?
@@ -109,25 +128,6 @@ module MediawikiApi
     end
 
     protected
-
-    def action(name, params = {})
-      name = name.to_s
-
-      method = params.delete(:http_method) || :post
-      token_type = params.delete(:token_type)
-      envelope = (params.delete(:envelope) || [name]).map(&:to_s)
-
-      params[:token] = get_token(token_type || name) unless token_type == false
-      params = compile_parameters(params)
-
-      response = @conn.send(method, "", params.merge(action: name, format: FORMAT))
-
-      if response.headers.include?("mediawiki-api-error")
-        raise ApiError.new(Response.new(response, ["error"]))
-      end
-
-      Response.new(response, envelope)
-    end
 
     def compile_parameters(parameters)
       parameters.each.with_object({}) do |(name, value), params|

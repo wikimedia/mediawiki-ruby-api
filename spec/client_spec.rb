@@ -1,12 +1,111 @@
 require "spec_helper"
 require "webmock/rspec"
+require "support/request_helpers"
 
 describe MediawikiApi::Client do
-  let(:api_url) { "http://localhost/api.php" }
-  let(:index_url) { "http://localhost/w/index.php" }
+  include MediawikiApi::RequestHelpers
 
-  subject { MediawikiApi::Client.new(api_url) }
+  let(:client) { MediawikiApi::Client.new(api_url) }
+
+  subject { client }
+
   body_base = { cookieprefix: "prefix", sessionid: "123" }
+
+  describe "#action" do
+    subject { client.action(action, params) }
+
+    let(:action) { "something" }
+    let(:params) { {} }
+
+    let(:response) { { headers: response_headers, body: response_body.to_json } }
+    let(:response_headers) { nil }
+    let(:response_body) { { "something" => {} } }
+
+    before do
+      @token_request = stub_token_request(action)
+      @request = stub_api_request(:post, action: action, token: mock_token).to_return(response)
+    end
+
+    it { is_expected.to be_a(MediawikiApi::Response) }
+
+    it "makes requests for both the right token and API action" do
+      subject
+      expect(@token_request).to have_been_made
+      expect(@request).to have_been_made
+    end
+
+    context "without a required token" do
+      let(:params) { { token_type: false } }
+
+      before do
+        @request_with_token = @request
+        @request_without_token = stub_api_request(:post, action: action).to_return(response)
+      end
+
+      it "does not request a token" do
+        subject
+        expect(@token_request).to_not have_been_made
+      end
+
+      it "makes the action request without a token" do
+        subject
+        expect(@request_without_token).to have_been_made
+        expect(@request_with_token).to_not have_been_made
+      end
+    end
+
+    context "given parameters" do
+      let(:params) { { foo: "value" } }
+
+      before do
+        @request_with_parameters = stub_action_request(action, foo: "value").to_return(response)
+      end
+
+      it "includes them" do
+        subject
+        expect(@request_with_parameters).to have_been_made
+      end
+    end
+
+    context "parameter compilation" do
+      context "negated parameters" do
+        let(:params) { { foo: false } }
+
+        before do
+          @request_with_parameter = stub_action_request(action, foo: false).to_return(response)
+          @request_without_parameter = stub_action_request(action).to_return(response)
+        end
+
+        it "omits the parameter" do
+          subject
+          expect(@request_with_parameter).to_not have_been_made
+          expect(@request_without_parameter).to have_been_made
+        end
+      end
+
+      context "array parameters" do
+        let(:params) { { foo: ["one", "two"] } }
+
+        before do
+          @request = stub_action_request(action, foo: "one|two").to_return(response)
+        end
+
+        it "pipe delimits values" do
+          subject
+          expect(@request).to have_been_made
+        end
+      end
+    end
+
+    context "when the response is an error" do
+      let(:response_headers) { { "MediaWiki-API-Error" => "code" } }
+      let(:response_body) { { error: { info: "detailed message", code: "code" } } }
+
+      it "raises an ApiError" do
+        expect { subject }.to raise_error(MediawikiApi::ApiError, "detailed message (code)")
+      end
+    end
+  end
 
   describe "#log_in" do
 
