@@ -58,6 +58,14 @@ MediaWiki API gem at: [Gerrit](https://gerrit.wikimedia.org/r/#/admin/projects/m
 
 ## Release notes
 
+### 0.2.0 2014-08-06
+
+- Automatic response parsing.
+- Handling of API error responses.
+- Watch/unwatch support.
+- Query support.
+- Public MediawikiApi::Client#action method for advanced API use.
+
 ### 0.1.4 2014-07-18
 
 - Added MediawikiApi::Client#protect_page.
