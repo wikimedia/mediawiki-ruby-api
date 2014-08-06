@@ -25,25 +25,6 @@ module MediawikiApi
       @tokens = {}
     end
 
-    def log_in(username, password, token = nil)
-      params = { lgname: username, lgpassword: password, token_type: false }
-      params[:lgtoken] = token unless token.nil?
-
-      data = action(:login, params).data
-
-      case data["result"]
-      when "Success"
-        @logged_in = true
-        @tokens.clear
-      when "NeedToken"
-        data = log_in(username, password, data["token"])
-      else
-        raise LoginError, data["result"]
-      end
-
-      data
-    end
-
     def create_account(username, password, token = nil)
       params = { name: username, password: password, token_type: false }
       params[:token] = token unless token.nil?
@@ -71,29 +52,31 @@ module MediawikiApi
       action(:delete, title: title, reason: reason)
     end
 
-    def upload_image(filename, path, comment, ignorewarnings)
-      file = Faraday::UploadIO.new(path, "image/png")
-      action(:upload, token_type: "edit", filename: filename, file: file, comment: comment, ignorewarnings: ignorewarnings)
-    end
-
     def get_wikitext(title)
       @conn.get "/w/index.php", { action: "raw", title: title }
     end
 
-    def protect_page(title, reason, protections = "edit=sysop|move=sysop")
-      action(:protect, title: title, reason: reason, protections: protections)
-    end
-
-    def watch_page(title)
-      action(:watch, titles: title)
-    end
-
-    def unwatch_page(title)
-      action(:watch, titles: title, unwatch: true)
-    end
-
     def list(type, params = {})
       subquery(:list, type, params)
+    end
+
+    def log_in(username, password, token = nil)
+      params = { lgname: username, lgpassword: password, token_type: false }
+      params[:lgtoken] = token unless token.nil?
+
+      data = action(:login, params).data
+
+      case data["result"]
+      when "Success"
+        @logged_in = true
+        @tokens.clear
+      when "NeedToken"
+        data = log_in(username, password, data["token"])
+      else
+        raise LoginError, data["result"]
+      end
+
+      data
     end
 
     def meta(type, params = {})
@@ -104,8 +87,25 @@ module MediawikiApi
       subquery(:prop, type, params)
     end
 
+    def protect_page(title, reason, protections = "edit=sysop|move=sysop")
+      action(:protect, title: title, reason: reason, protections: protections)
+    end
+
     def query(params = {})
       action(:query, { token_type: false, http_method: :get }.merge(params))
+    end
+
+    def unwatch_page(title)
+      action(:watch, titles: title, unwatch: true)
+    end
+
+    def upload_image(filename, path, comment, ignorewarnings)
+      file = Faraday::UploadIO.new(path, "image/png")
+      action(:upload, token_type: "edit", filename: filename, file: file, comment: comment, ignorewarnings: ignorewarnings)
+    end
+
+    def watch_page(title)
+      action(:watch, titles: title)
     end
 
     protected
