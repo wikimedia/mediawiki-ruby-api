@@ -12,6 +12,8 @@ module MediawikiApi::RequestHelpers
   end
 
   def stub_api_request(method, params)
+    params = params.each.with_object({}) { |(k, v), p| p[k] = v.to_s }
+
     stub_request(method, api_url).
       with((method == :post ? :body : :query) => params.merge(format: "json"))
   end

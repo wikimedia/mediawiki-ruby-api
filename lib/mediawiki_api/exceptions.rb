@@ -40,6 +40,12 @@ module MediawikiApi
     end
   end
 
+  class EditError < ApiError
+    def to_s
+      "check the response data for details"
+    end
+  end
+
   class LoginError < StandardError
   end
 

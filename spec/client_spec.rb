@@ -206,17 +206,21 @@ describe MediawikiApi::Client do
   end
 
   describe "#create_page" do
+    subject { client.create_page(title, text) }
+
+    let(:title) { "Test" }
+    let(:text) { "test123" }
+    let(:response) { {} }
+
     before do
-      stub_request(:get, api_url).
-        with(query: { format: "json", action: "tokens", type: "edit" }).
-        to_return(body: { tokens: { edittoken: "t123" } }.to_json )
-      @edit_req = stub_request(:post, api_url).
-        with(body: { format: "json", action: "edit", title: "Test", text: "test123", token: "t123" })
+      stub_token_request(:edit)
+      @edit_request = stub_action_request(:edit, title: title, text: text).
+        to_return(body: response.to_json)
     end
 
-    it "creates a page using an edit token" do
-      subject.create_page("Test", "test123")
-      expect(@edit_req).to have_been_requested
+    it "makes the right request" do
+      subject
+      expect(@edit_request).to have_been_requested
     end
   end
 
@@ -235,6 +239,31 @@ describe MediawikiApi::Client do
     end
 
     # evaluate results
+  end
+
+  describe "#edit" do
+    subject { client.edit(params) }
+
+    let(:params) { {} }
+    let(:response) { { edit: {} } }
+
+    before do
+      stub_token_request(:edit)
+      @edit_request = stub_action_request(:edit).to_return(body: response.to_json)
+    end
+
+    it "makes the request" do
+      subject
+      expect(@edit_request).to have_been_requested
+    end
+
+    context "upon an edit failure" do
+      let(:response) { { edit: { result: "Failure" } } }
+
+      it "raises an EditError" do
+        expect { subject }.to raise_error(MediawikiApi::EditError)
+      end
+    end
   end
 
   describe "#get_wikitext" do

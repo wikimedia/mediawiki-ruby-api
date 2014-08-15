@@ -40,7 +40,7 @@ module MediawikiApi
       raise HttpError, response.status if response.status >= 400
 
       if response.headers.include?("mediawiki-api-error")
-        raise ApiError.new(Response.new(response, ["error"]))
+        raise ApiError, Response.new(response, ["error"])
       end
 
       Response.new(response, envelope)
@@ -66,11 +66,17 @@ module MediawikiApi
     end
 
     def create_page(title, content)
-      action(:edit, title: title, text: content)
+      edit(title: title, text: content)
     end
 
     def delete_page(title, reason)
       action(:delete, title: title, reason: reason)
+    end
+
+    def edit(params = {})
+      response = action(:edit, params)
+      raise EditError, response if response.data["result"] == "Failure"
+      response
     end
 
     def get_wikitext(title)
