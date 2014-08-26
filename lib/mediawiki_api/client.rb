@@ -146,7 +146,9 @@ module MediawikiApi
       unless @tokens.include?(type)
         response = action(:tokens, type: type, http_method: :get, token_type: false)
 
-        raise TokenError, response.warnings.join(", ") if response.warnings?
+        if response.warnings? && response.warnings.grep(/Unrecognized value for parameter 'type'/).any?
+          raise TokenError, response.warnings.join(", ")
+        end
 
         @tokens[type] = response.data["#{type}token"]
       end

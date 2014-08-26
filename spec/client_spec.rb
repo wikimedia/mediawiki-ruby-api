@@ -15,14 +15,17 @@ describe MediawikiApi::Client do
     subject { client.action(action, params) }
 
     let(:action) { "something" }
+    let(:token_type) { action }
     let(:params) { {} }
 
     let(:response) { { headers: response_headers, body: response_body.to_json } }
     let(:response_headers) { nil }
     let(:response_body) { { "something" => {} } }
 
+    let(:token_warning) { nil }
+
     before do
-      @token_request = stub_token_request(action)
+      @token_request = stub_token_request(token_type, token_warning)
       @request = stub_api_request(:post, action: action, token: mock_token).to_return(response)
     end
 
@@ -103,6 +106,24 @@ describe MediawikiApi::Client do
 
       it "raises an ApiError" do
         expect { subject }.to raise_error(MediawikiApi::ApiError, "detailed message (code)")
+      end
+    end
+
+    context "given a bad token type" do
+      let(:params) { { token_type: token_type } }
+      let(:token_type) { "badtoken" }
+      let(:token_warning) { "Unrecognized value for parameter 'type': badtoken" }
+
+      it "raises a TokenError" do
+        expect { subject }.to raise_error(MediawikiApi::TokenError, token_warning)
+      end
+    end
+
+    context "when the token response includes only other types of warnings (see bug 70066)" do
+      let(:token_warning) { "action=tokens has been deprecated. Please use action=query&meta=tokens instead." }
+
+      it "raises no exception" do
+        expect { subject }.to_not raise_error
       end
     end
   end
