@@ -54,6 +54,10 @@ See https://www.mediawiki.org/wiki/Gerrit
 
 ## Release notes
 
+### 0.2.1 2014-08-26
+
+- Fix error handling for token requests
+
 ### 0.2.0 2014-08-06
 
 - Automatic response parsing.
