@@ -18,7 +18,8 @@ describe MediawikiApi::Client do
     let(:token_type) { action }
     let(:params) { {} }
 
-    let(:response) { { headers: response_headers, body: response_body.to_json } }
+    let(:response) { { status: response_status, headers: response_headers, body: response_body.to_json } }
+    let(:response_status) { 200 }
     let(:response_headers) { nil }
     let(:response_body) { { "something" => {} } }
 
@@ -97,6 +98,22 @@ describe MediawikiApi::Client do
           subject
           expect(@request).to have_been_made
         end
+      end
+    end
+
+    context "when the response status is in the 400 range" do
+      let(:response_status) { 403 }
+
+      it "raises an HttpError" do
+        expect { subject }.to raise_error(MediawikiApi::HttpError, "unexpected HTTP response (403)")
+      end
+    end
+
+    context "when the response status is in the 500 range" do
+      let(:response_status) { 502 }
+
+      it "raises an HttpError" do
+        expect { subject }.to raise_error(MediawikiApi::HttpError, "unexpected HTTP response (502)")
       end
     end
 

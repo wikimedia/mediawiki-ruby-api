@@ -28,6 +28,18 @@ module MediawikiApi
   class CreateAccountError < StandardError
   end
 
+  class HttpError < StandardError
+    attr_reader :status
+
+    def initialize(status)
+      @status = status
+    end
+
+    def to_s
+      "unexpected HTTP response (#{status})"
+    end
+  end
+
   class LoginError < StandardError
   end
 

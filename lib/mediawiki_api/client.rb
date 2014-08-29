@@ -37,6 +37,8 @@ module MediawikiApi
 
       response = @conn.send(method, "", params.merge(action: name, format: FORMAT))
 
+      raise HttpError, response.status if response.status >= 400
+
       if response.headers.include?("mediawiki-api-error")
         raise ApiError.new(Response.new(response, ["error"]))
       end
