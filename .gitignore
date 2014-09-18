@@ -1,4 +1,6 @@
 .bundle/
+/.yardoc/
+/doc/
 .ruby-version
 .ruby-gemset
 .gem
