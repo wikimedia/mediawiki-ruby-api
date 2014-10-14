@@ -54,6 +54,11 @@ See https://www.mediawiki.org/wiki/Gerrit
 
 ## Release notes
 
+### 0.3.0 2014-10-14
+
+- HTTP 400 and 500 responses now result in an HttpError exception.
+- Edit failures now result in an EditError exception.
+
 ### 0.2.1 2014-08-26
 
 - Fix error handling for token requests
