@@ -52,12 +52,6 @@ Style/RegexpLiteral:
 Style/SignalException:
   Enabled: false
 
-# Offense count: 299
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/StringLiterals:
-  Enabled: false
-
 # Offense count: 2
 # Cop supports --auto-correct.
 Style/UnneededPercentQ:

@@ -1,5 +1,5 @@
-require "forwardable"
-require "json"
+require 'forwardable'
+require 'json'
 
 module MediawikiApi
   # Provides access to a parsed MediaWiki API responses.
@@ -56,8 +56,8 @@ module MediawikiApi
     # @return [Array]
     #
     def warnings
-      if response_object["warnings"]
-        response_object["warnings"].values.map(&:values).flatten
+      if response_object['warnings']
+        response_object['warnings'].values.map(&:values).flatten
       else
         []
       end

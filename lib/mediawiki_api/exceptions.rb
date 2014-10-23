@@ -7,11 +7,11 @@ module MediawikiApi
     end
 
     def code
-      data["code"]
+      data['code']
     end
 
     def info
-      data["info"]
+      data['info']
     end
 
     def to_s
@@ -42,7 +42,7 @@ module MediawikiApi
 
   class EditError < ApiError
     def to_s
-      "check the response data for details"
+      'check the response data for details'
     end
   end
 

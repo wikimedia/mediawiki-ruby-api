@@ -1,13 +1,13 @@
-require "faraday"
-require "faraday-cookie_jar"
-require "json"
+require 'faraday'
+require 'faraday-cookie_jar'
+require 'json'
 
-require "mediawiki_api/exceptions"
-require "mediawiki_api/response"
+require 'mediawiki_api/exceptions'
+require 'mediawiki_api/response'
 
 module MediawikiApi
   class Client
-    FORMAT = "json"
+    FORMAT = 'json'
 
     attr_accessor :logged_in
 
@@ -35,12 +35,12 @@ module MediawikiApi
       params[:token] = get_token(token_type || name) unless token_type == false
       params = compile_parameters(params)
 
-      response = @conn.send(method, "", params.merge(action: name, format: FORMAT))
+      response = @conn.send(method, '', params.merge(action: name, format: FORMAT))
 
       raise HttpError, response.status if response.status >= 400
 
-      if response.headers.include?("mediawiki-api-error")
-        raise ApiError, Response.new(response, ["error"])
+      if response.headers.include?('mediawiki-api-error')
+        raise ApiError, Response.new(response, ['error'])
       end
 
       Response.new(response, envelope)
@@ -52,14 +52,14 @@ module MediawikiApi
 
       data = action(:createaccount, params).data
 
-      case data["result"]
-      when "Success"
+      case data['result']
+      when 'Success'
         @logged_in = true
         @tokens.clear
-      when "NeedToken"
-        data = create_account(username, password, data["token"])
+      when 'NeedToken'
+        data = create_account(username, password, data['token'])
       else
-        raise CreateAccountError, data["result"]
+        raise CreateAccountError, data['result']
       end
 
       data
@@ -75,12 +75,12 @@ module MediawikiApi
 
     def edit(params = {})
       response = action(:edit, params)
-      raise EditError, response if response.data["result"] == "Failure"
+      raise EditError, response if response.data['result'] == 'Failure'
       response
     end
 
     def get_wikitext(title)
-      @conn.get "/w/index.php", action: "raw", title: title
+      @conn.get '/w/index.php', action: 'raw', title: title
     end
 
     def list(type, params = {})
@@ -93,14 +93,14 @@ module MediawikiApi
 
       data = action(:login, params).data
 
-      case data["result"]
-      when "Success"
+      case data['result']
+      when 'Success'
         @logged_in = true
         @tokens.clear
-      when "NeedToken"
-        data = log_in(username, password, data["token"])
+      when 'NeedToken'
+        data = log_in(username, password, data['token'])
       else
-        raise LoginError, data["result"]
+        raise LoginError, data['result']
       end
 
       data
@@ -114,7 +114,7 @@ module MediawikiApi
       subquery(:prop, type, params)
     end
 
-    def protect_page(title, reason, protections = "edit=sysop|move=sysop")
+    def protect_page(title, reason, protections = 'edit=sysop|move=sysop')
       action(:protect, title: title, reason: reason, protections: protections)
     end
 
@@ -127,8 +127,8 @@ module MediawikiApi
     end
 
     def upload_image(filename, path, comment, ignorewarnings)
-      file = Faraday::UploadIO.new(path, "image/png")
-      action(:upload, token_type: "edit", filename: filename, file: file, comment: comment, ignorewarnings: ignorewarnings)
+      file = Faraday::UploadIO.new(path, 'image/png')
+      action(:upload, token_type: 'edit', filename: filename, file: file, comment: comment, ignorewarnings: ignorewarnings)
     end
 
     def watch_page(title)
@@ -143,7 +143,7 @@ module MediawikiApi
         when false
           # omit it entirely
         when Array
-          params[name] = value.join("|")
+          params[name] = value.join('|')
         else
           params[name] = value
         end
@@ -155,7 +155,7 @@ module MediawikiApi
         response = action(:tokens, type: type, http_method: :get, token_type: false)
 
         if response.warnings? && response.warnings.grep(/Unrecognized value for parameter 'type'/).any?
-          raise TokenError, response.warnings.join(", ")
+          raise TokenError, response.warnings.join(', ')
         end
 
         @tokens[type] = response.data["#{type}token"]
@@ -165,7 +165,7 @@ module MediawikiApi
     end
 
     def subquery(type, subtype, params = {})
-      query(params.merge(type.to_sym => subtype, :envelope => ["query", subtype]))
+      query(params.merge(type.to_sym => subtype, :envelope => ['query', subtype]))
     end
   end
 end
