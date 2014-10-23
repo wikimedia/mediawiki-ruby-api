@@ -128,7 +128,9 @@ module MediawikiApi
 
     def upload_image(filename, path, comment, ignorewarnings)
       file = Faraday::UploadIO.new(path, 'image/png')
-      action(:upload, token_type: 'edit', filename: filename, file: file, comment: comment, ignorewarnings: ignorewarnings)
+      action(:upload,
+             token_type: 'edit', filename: filename, file: file, comment: comment,
+             ignorewarnings: ignorewarnings)
     end
 
     def watch_page(title)
@@ -153,8 +155,9 @@ module MediawikiApi
     def get_token(type)
       unless @tokens.include?(type)
         response = action(:tokens, type: type, http_method: :get, token_type: false)
+        parameter_warning = /Unrecognized value for parameter 'type'/
 
-        if response.warnings? && response.warnings.grep(/Unrecognized value for parameter 'type'/).any?
+        if response.warnings? && response.warnings.grep(parameter_warning).any?
           raise TokenError, response.warnings.join(', ')
         end
 
