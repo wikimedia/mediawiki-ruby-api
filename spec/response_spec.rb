@@ -28,14 +28,14 @@ describe MediawikiApi::Response do
       end
 
       context 'and a multi-level envelope' do
-        let(:envelope) { ['query', 'result'] }
+        let(:envelope) { %w(query result) }
         let(:nested_object) { response_object['query']['result'] }
 
         it { is_expected.to eq(nested_object) }
       end
 
       context "and a multi-level envelope that doesn't completely match" do
-        let(:envelope) { ['query', 'something'] }
+        let(:envelope) { %w(query something) }
         let(:partially_nested_object) { response_object['query'] }
 
         it { is_expected.to eq(partially_nested_object) }
@@ -46,7 +46,7 @@ describe MediawikiApi::Response do
       let(:body) { '[ "something" ]' }
 
       context 'with any expected envelope' do
-        let(:envelope) { ['what', 'ever'] }
+        let(:envelope) { %w(what ever) }
 
         it { is_expected.to eq(response_object) }
       end

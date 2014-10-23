@@ -88,7 +88,7 @@ describe MediawikiApi::Client do
       end
 
       context 'array parameters' do
-        let(:params) { { foo: ['one', 'two'] } }
+        let(:params) { { foo: %w(one two) } }
 
         before do
           @request = stub_action_request(action, foo: 'one|two').to_return(response)
