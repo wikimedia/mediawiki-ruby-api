@@ -29,11 +29,6 @@ Metrics/MethodLength:
 Style/Alias:
   Enabled: false
 
-# Offense count: 1
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/ClassAndModuleChildren:
-  Enabled: false
-
 # Offense count: 6
 Style/Documentation:
   Enabled: false
