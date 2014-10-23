@@ -11,7 +11,7 @@ module MediawikiApi
 
     attr_accessor :logged_in
 
-    alias logged_in? logged_in
+    alias_method :logged_in?, :logged_in
 
     def initialize(url, log = false)
       @conn = Faraday.new(url: url) do |faraday|
