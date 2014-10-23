@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = MediawikiApi::VERSION
   spec.authors       = ["Amir Aharoni", "Chris McMahon", "Dan Duvall", "Jeff Hall", "Juliusz Gonera", "Zeljko Filipin"]
   spec.email         = ["amir.aharoni@mail.huji.ac.il", "cmcmahon@wikimedia.org", "dduvall@wikimedia.org", "jhall@wikimedia.org", "jgonera@wikimedia.org", "zeljko.filipin@gmail.com"]
-  spec.summary       = %q{A library for interacting with MediaWiki API from Ruby.}
-  spec.description   = %q{Uses adapter-agnostic Faraday gem to talk to MediaWiki API.}
+  spec.summary       = %q(A library for interacting with MediaWiki API from Ruby.)
+  spec.description   = %q(Uses adapter-agnostic Faraday gem to talk to MediaWiki API.)
   spec.homepage      = "https://github.com/wikimedia/mediawiki-ruby-api"
   spec.license       = "GPL-2"
 
