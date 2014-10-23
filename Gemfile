@@ -1,5 +1,5 @@
-#ruby=ruby-2.1.2
-#ruby-gemset=mediawiki_api
+# ruby=ruby-2.1.2
+# ruby-gemset=mediawiki_api
 
 source "https://rubygems.org"
 
