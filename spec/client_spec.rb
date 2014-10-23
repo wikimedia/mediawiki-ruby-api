@@ -158,8 +158,6 @@ describe MediawikiApi::Client do
 
     context 'when API returns NeedToken' do
       before do
-        headers = { 'Set-Cookie' => 'prefixSession=789; path=/; domain=localhost; HttpOnly' }
-
         stub_request(:post, api_url).
           with(body: { format: 'json', action: 'login', lgname: 'Test', lgpassword: 'qwe123' }).
           to_return(
@@ -181,7 +179,7 @@ describe MediawikiApi::Client do
       end
 
       it 'sends second request with token and cookies' do
-        response = subject.log_in('Test', 'qwe123')
+        subject.log_in('Test', 'qwe123')
 
         expect(@success_req).to have_been_requested
       end
@@ -288,8 +286,6 @@ describe MediawikiApi::Client do
 
     context 'when API returns NeedToken' do
       before do
-        headers = { 'Set-Cookie' => 'prefixSession=789; path=/; domain=localhost; HttpOnly' }
-
         stub_request(:post, api_url).
           with(body: { format: 'json', action: 'createaccount', name: 'Test', password: 'qwe123' }).
           to_return(
