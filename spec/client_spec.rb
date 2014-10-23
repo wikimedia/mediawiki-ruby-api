@@ -150,7 +150,7 @@ describe MediawikiApi::Client do
     it "logs in when API returns Success" do
       stub_request(:post, api_url).
         with(body: { format: "json", action: "login", lgname: "Test", lgpassword: "qwe123" }).
-        to_return(body: { login: body_base.merge({ result: "Success" }) }.to_json )
+        to_return(body: { login: body_base.merge(result: "Success") }.to_json )
 
       subject.log_in "Test", "qwe123"
       expect(subject.logged_in).to be true
@@ -163,14 +163,14 @@ describe MediawikiApi::Client do
         stub_request(:post, api_url).
           with(body: { format: "json", action: "login", lgname: "Test", lgpassword: "qwe123" }).
           to_return(
-            body: { login: body_base.merge({ result: "NeedToken", token: "456" }) }.to_json,
+            body: { login: body_base.merge(result: "NeedToken", token: "456") }.to_json,
             headers: { "Set-Cookie" => "prefixSession=789; path=/; domain=localhost; HttpOnly" }
           )
 
         @success_req = stub_request(:post, api_url).
           with(body: { format: "json", action: "login", lgname: "Test", lgpassword: "qwe123", lgtoken: "456" }).
           with(headers: { "Cookie" => "prefixSession=789" }).
-          to_return(body: { login: body_base.merge({ result: "Success" }) }.to_json )
+          to_return(body: { login: body_base.merge(result: "Success") }.to_json )
       end
 
       it "logs in" do
@@ -191,7 +191,7 @@ describe MediawikiApi::Client do
       before do
         stub_request(:post, api_url).
           with(body: { format: "json", action: "login", lgname: "Test", lgpassword: "qwe123" }).
-          to_return(body: { login: body_base.merge({ result: "EmptyPass" }) }.to_json )
+          to_return(body: { login: body_base.merge(result: "EmptyPass") }.to_json )
       end
 
       it "does not log in" do
@@ -281,7 +281,7 @@ describe MediawikiApi::Client do
     it "creates an account when API returns Success" do
       stub_request(:post, api_url).
         with(body: { format: "json", action: "createaccount", name: "Test", password: "qwe123" }).
-        to_return(body: { createaccount: body_base.merge({ result: "Success" }) }.to_json )
+        to_return(body: { createaccount: body_base.merge(result: "Success") }.to_json )
 
       expect(subject.create_account("Test", "qwe123")).to include("result" => "Success")
     end
@@ -293,14 +293,14 @@ describe MediawikiApi::Client do
         stub_request(:post, api_url).
           with(body: { format: "json", action: "createaccount", name: "Test", password: "qwe123" }).
           to_return(
-            body: { createaccount: body_base.merge({ result: "NeedToken", token: "456" }) }.to_json,
+            body: { createaccount: body_base.merge(result: "NeedToken", token: "456") }.to_json,
             headers: { "Set-Cookie" => "prefixSession=789; path=/; domain=localhost; HttpOnly" }
           )
 
         @success_req = stub_request(:post, api_url).
           with(body: { format: "json", action: "createaccount", name: "Test", password: "qwe123", token: "456" }).
           with(headers: { "Cookie" => "prefixSession=789" }).
-          to_return(body: { createaccount: body_base.merge({ result: "Success" }) }.to_json )
+          to_return(body: { createaccount: body_base.merge(result: "Success") }.to_json )
       end
 
       it "creates an account" do
@@ -319,7 +319,7 @@ describe MediawikiApi::Client do
       before do
         stub_request(:post, api_url).
           with(body: { format: "json", action: "createaccount", name: "Test", password: "qwe123" }).
-          to_return(body: { createaccount: body_base.merge({ result: "WhoKnows" }) }.to_json )
+          to_return(body: { createaccount: body_base.merge(result: "WhoKnows") }.to_json )
       end
 
       it "raises error with proper message" do

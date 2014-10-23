@@ -80,7 +80,7 @@ module MediawikiApi
     end
 
     def get_wikitext(title)
-      @conn.get "/w/index.php", { action: "raw", title: title }
+      @conn.get "/w/index.php", action: "raw", title: title
     end
 
     def list(type, params = {})
