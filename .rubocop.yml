@@ -3,3 +3,6 @@ inherit_from: .rubocop_todo.yml
 Syle/DotPosition:
   Enabled: true
   EnforcedStyle: trailing
+
+Style/SignalException:
+  Enabled: false
