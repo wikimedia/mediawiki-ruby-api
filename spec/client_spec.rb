@@ -18,7 +18,10 @@ describe MediawikiApi::Client do
     let(:token_type) { action }
     let(:params) { {} }
 
-    let(:response) { { status: response_status, headers: response_headers, body: response_body.to_json } }
+    let(:response) do
+      { status: response_status, headers: response_headers, body: response_body.to_json }
+    end
+
     let(:response_status) { 200 }
     let(:response_headers) { nil }
     let(:response_body) { { 'something' => {} } }
@@ -105,7 +108,8 @@ describe MediawikiApi::Client do
       let(:response_status) { 403 }
 
       it 'raises an HttpError' do
-        expect { subject }.to raise_error(MediawikiApi::HttpError, 'unexpected HTTP response (403)')
+        expect { subject }.to raise_error(MediawikiApi::HttpError,
+                                          'unexpected HTTP response (403)')
       end
     end
 
@@ -113,7 +117,8 @@ describe MediawikiApi::Client do
       let(:response_status) { 502 }
 
       it 'raises an HttpError' do
-        expect { subject }.to raise_error(MediawikiApi::HttpError, 'unexpected HTTP response (502)')
+        expect { subject }.to raise_error(MediawikiApi::HttpError,
+                                          'unexpected HTTP response (502)')
       end
     end
 
@@ -137,7 +142,9 @@ describe MediawikiApi::Client do
     end
 
     context 'when the token response includes only other types of warnings (see bug 70066)' do
-      let(:token_warning) { 'action=tokens has been deprecated. Please use action=query&meta=tokens instead.' }
+      let(:token_warning) do
+        'action=tokens has been deprecated. Please use action=query&meta=tokens instead.'
+      end
 
       it 'raises no exception' do
         expect { subject }.to_not raise_error
@@ -166,7 +173,8 @@ describe MediawikiApi::Client do
           )
 
         @success_req = stub_request(:post, api_url).
-          with(body: { format: 'json', action: 'login', lgname: 'Test', lgpassword: 'qwe123', lgtoken: '456' }).
+          with(body: { format: 'json', action: 'login',
+                       lgname: 'Test', lgpassword: 'qwe123', lgtoken: '456' }).
           with(headers: { 'Cookie' => 'prefixSession=789' }).
           to_return(body: { login: body_base.merge(result: 'Success') }.to_json)
       end
@@ -198,7 +206,8 @@ describe MediawikiApi::Client do
       end
 
       it 'raises error with proper message' do
-        expect { subject.log_in 'Test', 'qwe123' }.to raise_error MediawikiApi::LoginError, 'EmptyPass'
+        expect { subject.log_in 'Test', 'qwe123' }.to raise_error(MediawikiApi::LoginError,
+                                                                  'EmptyPass')
       end
     end
   end
@@ -228,7 +237,8 @@ describe MediawikiApi::Client do
         with(query: { format: 'json', action: 'tokens', type: 'delete' }).
         to_return(body: { tokens: { deletetoken: 't123' } }.to_json)
       @delete_req = stub_request(:post, api_url).
-        with(body: { format: 'json', action: 'delete', title: 'Test', reason: 'deleting', token: 't123' })
+        with(body: { format: 'json', action: 'delete',
+                     title: 'Test', reason: 'deleting', token: 't123' })
     end
 
     it 'deletes a page using a delete token' do
@@ -287,14 +297,16 @@ describe MediawikiApi::Client do
     context 'when API returns NeedToken' do
       before do
         stub_request(:post, api_url).
-          with(body: { format: 'json', action: 'createaccount', name: 'Test', password: 'qwe123' }).
+          with(body: { format: 'json', action: 'createaccount',
+                       name: 'Test', password: 'qwe123' }).
           to_return(
             body: { createaccount: body_base.merge(result: 'NeedToken', token: '456') }.to_json,
             headers: { 'Set-Cookie' => 'prefixSession=789; path=/; domain=localhost; HttpOnly' }
           )
 
         @success_req = stub_request(:post, api_url).
-          with(body: { format: 'json', action: 'createaccount', name: 'Test', password: 'qwe123', token: '456' }).
+          with(body: { format: 'json', action: 'createaccount',
+                       name: 'Test', password: 'qwe123', token: '456' }).
           with(headers: { 'Cookie' => 'prefixSession=789' }).
           to_return(body: { createaccount: body_base.merge(result: 'Success') }.to_json)
       end
@@ -314,12 +326,16 @@ describe MediawikiApi::Client do
     context 'when API returns neither Success nor NeedToken' do
       before do
         stub_request(:post, api_url).
-          with(body: { format: 'json', action: 'createaccount', name: 'Test', password: 'qwe123' }).
+          with(body: { format: 'json', action: 'createaccount',
+                       name: 'Test', password: 'qwe123' }).
           to_return(body: { createaccount: body_base.merge(result: 'WhoKnows') }.to_json)
       end
 
       it 'raises error with proper message' do
-        expect { subject.create_account 'Test', 'qwe123' }.to raise_error MediawikiApi::CreateAccountError, 'WhoKnows'
+        expect { subject.create_account 'Test', 'qwe123' }.to raise_error(
+          MediawikiApi::CreateAccountError,
+          'WhoKnows'
+        )
       end
     end
   end
@@ -345,7 +361,8 @@ describe MediawikiApi::Client do
         with(query: { format: 'json', action: 'tokens', type: 'watch' }).
         to_return(body: { tokens: { watchtoken: 't123' } }.to_json)
       @watch_req = stub_request(:post, api_url).
-        with(body: { format: 'json', token: 't123', action: 'watch', titles: 'Test', unwatch: 'true' })
+        with(body: { format: 'json', token: 't123', action: 'watch',
+                     titles: 'Test', unwatch: 'true' })
     end
 
     it 'sends a valid unwatch request' do

@@ -1,5 +1,14 @@
 inherit_from: .rubocop_todo.yml
 
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 100
+
+Metrics/MethodLength:
+  Enabled: false
+
 Syle/DotPosition:
   Enabled: true
   EnforcedStyle: trailing
