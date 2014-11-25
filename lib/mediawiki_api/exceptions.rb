@@ -1,4 +1,5 @@
 module MediawikiApi
+  # generic MediaWiki api errors
   class ApiError < StandardError
     attr_reader :response
 
@@ -28,6 +29,7 @@ module MediawikiApi
   class CreateAccountError < StandardError
   end
 
+  # for errors from HTTP requests
   class HttpError < StandardError
     attr_reader :status
 
@@ -40,6 +42,7 @@ module MediawikiApi
     end
   end
 
+  # for edit failures
   class EditError < ApiError
     def to_s
       'check the response data for details'

@@ -14,10 +14,6 @@ Metrics/CyclomaticComplexity:
 Style/Alias:
   Enabled: false
 
-# Offense count: 6
-Style/Documentation:
-  Enabled: false
-
 # Offense count: 1
 Style/RegexpLiteral:
   MaxSlashes: 0

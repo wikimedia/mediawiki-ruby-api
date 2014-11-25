@@ -1,4 +1,5 @@
 module MediawikiApi
+  # testing helpers
   module RequestHelpers
     def api_url
       'http://localhost/api.php'

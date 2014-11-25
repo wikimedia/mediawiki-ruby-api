@@ -6,6 +6,7 @@ require 'mediawiki_api/exceptions'
 require 'mediawiki_api/response'
 
 module MediawikiApi
+  # high level client for MediaWiki
   class Client
     FORMAT = 'json'
 
