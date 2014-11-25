@@ -7,7 +7,7 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Enabled: false
 
-Syle/DotPosition:
+Style/DotPosition:
   Enabled: true
   EnforcedStyle: trailing
 
