@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.license       = 'GPL-2'
 
   spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  spec.test_files    = spec.files.grep(/^(test|spec|features)/)
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'faraday', '~> 0.9', '>= 0.9.0'

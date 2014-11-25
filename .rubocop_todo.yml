@@ -13,7 +13,3 @@ Metrics/CyclomaticComplexity:
 # Cop supports --auto-correct.
 Style/Alias:
   Enabled: false
-
-# Offense count: 1
-Style/RegexpLiteral:
-  MaxSlashes: 0
