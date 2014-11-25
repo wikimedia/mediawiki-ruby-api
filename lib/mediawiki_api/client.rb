@@ -35,15 +35,7 @@ module MediawikiApi
       params[:token] = get_token(token_type || name) unless token_type == false
       params = compile_parameters(params)
 
-      response = @conn.send(method, '', params.merge(action: name, format: FORMAT))
-
-      raise HttpError, response.status if response.status >= 400
-
-      if response.headers.include?('mediawiki-api-error')
-        raise ApiError, Response.new(response, ['error'])
-      end
-
-      Response.new(response, envelope)
+      send_request(method, params.merge(action: name, format: FORMAT), envelope)
     end
 
     def create_account(username, password, token = nil)
@@ -165,6 +157,18 @@ module MediawikiApi
       end
 
       @tokens[type]
+    end
+
+    def send_request(method, params, envelope)
+      response = @conn.send(method, '', params)
+
+      raise HttpError, response.status if response.status >= 400
+
+      if response.headers.include?('mediawiki-api-error')
+        raise ApiError, Response.new(response, ['error'])
+      end
+
+      Response.new(response, envelope)
     end
 
     def subquery(type, subtype, params = {})
