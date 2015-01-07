@@ -7,11 +7,13 @@ Gem::Specification.new do |spec|
   spec.name          = 'mediawiki_api'
   spec.version       = MediawikiApi::VERSION
   spec.authors       = [
-    'Amir Aharoni', 'Chris McMahon', 'Dan Duvall', 'Jeff Hall', 'Juliusz Gonera', 'Zeljko Filipin'
+    'Amir Aharoni', 'Asaf Bartov', 'Chris McMahon', 'Dan Duvall', 'Jeff Hall', 'Juliusz Gonera',
+    'Zeljko Filipin'
   ]
   spec.email         = [
-    'amir.aharoni@mail.huji.ac.il', 'cmcmahon@wikimedia.org', 'dduvall@wikimedia.org',
-    'jhall@wikimedia.org', 'jgonera@wikimedia.org', 'zeljko.filipin@gmail.com'
+    'amir.aharoni@mail.huji.ac.il', 'asaf.bartov@gmail.com', 'cmcmahon@wikimedia.org',
+    'dduvall@wikimedia.org', 'jhall@wikimedia.org', 'jgonera@wikimedia.org',
+    'zeljko.filipin@gmail.com'
   ]
   spec.summary       = 'A library for interacting with MediaWiki API from Ruby.'
   spec.description   = 'Uses adapter-agnostic Faraday gem to talk to MediaWiki API.'

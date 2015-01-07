@@ -51,16 +51,20 @@ module MediawikiApi
       end
     end
 
+    # Set of error messages from the response.
+    #
+    # @return [Array]
+    #
+    def errors
+      flatten_resp('errors')
+    end
+
     # Set of warning messages from the response.
     #
     # @return [Array]
     #
     def warnings
-      if response_object['warnings']
-        response_object['warnings'].values.map(&:values).flatten
-      else
-        []
-      end
+      flatten_resp('warnings')
     end
 
     # Whether the response contains warnings.
@@ -72,6 +76,14 @@ module MediawikiApi
     end
 
     private
+
+    def flatten_resp(str)
+      if response_object[str]
+        response_object[str].values.map(&:values).flatten
+      else
+        []
+      end
+    end
 
     def open_envelope(obj, env = @envelope)
       if !obj.is_a?(Hash) || env.nil? || env.empty? || !obj.include?(env.first)

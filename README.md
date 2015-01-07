@@ -54,6 +54,9 @@ See https://www.mediawiki.org/wiki/Gerrit
 
 ## Release notes
 
+### 0.3.1 2015-01-06
+- actions now automatically refresh token and re-submit action if first attempt returns 'badtoken'.
+
 ### 0.3.0 2014-10-14
 
 - HTTP 400 and 500 responses now result in an HttpError exception.

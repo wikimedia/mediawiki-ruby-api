@@ -150,6 +150,26 @@ describe MediawikiApi::Client do
         expect { subject }.to_not raise_error
       end
     end
+
+    context 'when the token is invalid' do
+      let(:response_headers) { { 'MediaWiki-API-Error' => 'badtoken' } }
+      let(:response_body) { { error: { code: 'badtoken', info: 'Invalid token' } } }
+
+      before do
+        # Stub a second request without the error
+        @request.then.to_return(status: 200)
+      end
+
+      it 'rescues the initial exception' do
+        expect { subject }.to_not raise_error
+      end
+
+      it 'automatically retries the request' do
+        subject
+        expect(@token_request).to have_been_made.twice
+        expect(@request).to have_been_made.twice
+      end
+    end
   end
 
   describe '#log_in' do

@@ -27,16 +27,14 @@ module MediawikiApi
     end
 
     def action(name, params = {})
-      name = name.to_s
-
-      method = params.delete(:http_method) || :post
-      token_type = params.delete(:token_type)
-      envelope = (params.delete(:envelope) || [name]).map(&:to_s)
-
-      params[:token] = get_token(token_type || name) unless token_type == false
-      params = compile_parameters(params)
-
-      send_request(method, params.merge(action: name, format: FORMAT), envelope)
+      raw_action(name, params)
+    rescue ApiError => e
+      if e.code == 'badtoken'
+        @tokens.clear # ensure fresh token on re-try
+        raw_action(name, params) # no rescue this time; only re-try once.
+      else
+        raise # otherwise, propagate the exception
+      end
     end
 
     def create_account(username, password, token = nil)
@@ -174,6 +172,20 @@ module MediawikiApi
 
     def subquery(type, subtype, params = {})
       query(params.merge(type.to_sym => subtype, :envelope => ['query', subtype]))
+    end
+
+    def raw_action(name, params = {})
+      name = name.to_s
+      params = params.clone
+
+      method = params.delete(:http_method) || :post
+      token_type = params.delete(:token_type)
+      envelope = (params.delete(:envelope) || [name]).map(&:to_s)
+
+      params[:token] = get_token(token_type || name) unless token_type == false
+      params = compile_parameters(params)
+
+      send_request(method, params.merge(action: name, format: FORMAT), envelope)
     end
   end
 end
