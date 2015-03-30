@@ -1,23 +1,8 @@
-Metrics/AbcSize:
-  Enabled: false
-
-Metrics/ClassLength:
-  Enabled: false
-
-Metrics/MethodLength:
-  Enabled: false
-
-Metrics/ParameterLists:
-  Enabled: false
+AllCops:
+  StyleGuideCopsOnly: true
 
 Metrics/LineLength:
   Max: 100
-
-Metrics/CyclomaticComplexity:
-  Enabled: false
-
-Metrics/PerceivedComplexity:
-  Enabled: false
 
 Metrics/MethodLength:
   Enabled: false
@@ -26,8 +11,13 @@ Style/Alias:
   Enabled: false
 
 Style/DotPosition:
-  Enabled: true
   EnforcedStyle: trailing
 
 Style/SignalException:
   Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/TrivialAccessors:
+  ExactNameMatch: true
