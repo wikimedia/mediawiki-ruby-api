@@ -3,16 +3,16 @@ module MediawikiApi
   class ApiError < StandardError
     attr_reader :response
 
-    def initialize(response)
+    def initialize(response=nil)
       @response = response
     end
 
     def code
-      data['code']
+      response ? data['code'] : '000'
     end
 
     def info
-      data['info']
+      response ? data['info'] : 'generic MediawikiApi gem example error'
     end
 
     def to_s
@@ -22,7 +22,11 @@ module MediawikiApi
     private
 
     def data
-      @response.data || {}
+      if response
+        @response.data || {}
+      else
+        nil
+      end
     end
   end
 
