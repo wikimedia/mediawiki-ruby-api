@@ -179,7 +179,7 @@ module MediawikiApi
       params = params.clone
 
       method = params.delete(:http_method) || :post
-      token_type = params.delete(:token_type)
+      token_type = params.delete(:token_type) || false
       envelope = (params.delete(:envelope) || [name]).map(&:to_s)
 
       params[:token] = get_token(token_type || name) unless token_type == false
