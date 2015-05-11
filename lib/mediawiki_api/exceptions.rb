@@ -3,16 +3,16 @@ module MediawikiApi
   class ApiError < StandardError
     attr_reader :response
 
-    def initialize(response)
+    def initialize(response = nil)
       @response = response
     end
 
     def code
-      data['code']
+      response_data['code'] || '000'
     end
 
     def info
-      data['info']
+      response_data['info'] || 'unknown API error'
     end
 
     def to_s
@@ -21,8 +21,12 @@ module MediawikiApi
 
     private
 
-    def data
-      @response.data || {}
+    def response_data
+      if @response
+        @response.data || {}
+      else
+        {}
+      end
     end
   end
 
