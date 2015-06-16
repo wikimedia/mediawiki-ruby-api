@@ -15,7 +15,7 @@ describe MediawikiApi::Client do
     subject { client.action(action, params) }
 
     let(:action) { 'something' }
-    let(:token_type) { action }
+    let(:token_type) { 'csrf' }
     let(:params) { {} }
 
     let(:response) do
@@ -221,7 +221,7 @@ describe MediawikiApi::Client do
       end
 
       it 'does not log in' do
-        expect { subject.log_in 'Test', 'qwe123' }.to raise_error
+        expect { subject.log_in 'Test', 'qwe123' }.to raise_error(MediawikiApi::LoginError)
         expect(subject.logged_in).to be false
       end
 
@@ -240,7 +240,7 @@ describe MediawikiApi::Client do
     let(:response) { {} }
 
     before do
-      stub_token_request(:edit)
+      stub_token_request('csrf')
       @edit_request = stub_action_request(:edit, title: title, text: text).
         to_return(body: response.to_json)
     end
@@ -254,8 +254,8 @@ describe MediawikiApi::Client do
   describe '#delete_page' do
     before do
       stub_request(:get, api_url).
-        with(query: { format: 'json', action: 'tokens', type: 'delete' }).
-        to_return(body: { tokens: { deletetoken: 't123' } }.to_json)
+        with(query: { format: 'json', action: 'query', meta: 'tokens', type: 'csrf' }).
+        to_return(body: { query: { tokens: { csrftoken: 't123' } } }.to_json)
       @delete_req = stub_request(:post, api_url).
         with(body: { format: 'json', action: 'delete',
                      title: 'Test', reason: 'deleting', token: 't123' })
@@ -276,7 +276,7 @@ describe MediawikiApi::Client do
     let(:response) { { edit: {} } }
 
     before do
-      stub_token_request(:edit)
+      stub_token_request('csrf')
       @edit_request = stub_action_request(:edit).to_return(body: response.to_json)
     end
 
@@ -363,8 +363,8 @@ describe MediawikiApi::Client do
   describe '#watch_page' do
     before do
       stub_request(:get, api_url).
-        with(query: { format: 'json', action: 'tokens', type: 'watch' }).
-        to_return(body: { tokens: { watchtoken: 't123' } }.to_json)
+        with(query: { format: 'json', action: 'query', meta: 'tokens', type: 'watch' }).
+        to_return(body: { query: { tokens: { watchtoken: 't123' } } }.to_json)
       @watch_req = stub_request(:post, api_url).
         with(body: { format: 'json', token: 't123', action: 'watch', titles: 'Test' })
     end
@@ -378,8 +378,8 @@ describe MediawikiApi::Client do
   describe '#unwatch_page' do
     before do
       stub_request(:get, api_url).
-        with(query: { format: 'json', action: 'tokens', type: 'watch' }).
-        to_return(body: { tokens: { watchtoken: 't123' } }.to_json)
+        with(query: { format: 'json', action: 'query', meta: 'tokens', type: 'watch' }).
+        to_return(body: { query: { tokens: { watchtoken: 't123' } } }.to_json)
       @watch_req = stub_request(:post, api_url).
         with(body: { format: 'json', token: 't123', action: 'watch',
                      titles: 'Test', unwatch: 'true' })

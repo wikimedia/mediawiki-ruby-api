@@ -26,12 +26,14 @@ require "mediawiki_api"
 
 client = MediawikiApi::Client.new "http://127.0.0.1:8080/w/api.php"
 client.log_in "username", "password" # default Vagrant username and password are "Admin", "vagrant"
-client.create_account "username", "password"
+client.create_account "username", "password" # will not work on wikis that require CAPTCHA, like Wikipedia
 client.create_page "title", "content"
 client.get_wikitext "title"
 client.protect_page "title", "reason", "protections" #  protections are optional, default is "edit=sysop|move=sysop"
 client.delete_page "title", "reason"
 client.upload_image "filename", "path", "comment", "ignorewarnings"
+client.watch "title"
+client.unwatch "title"
 client.meta :siteinfo, siprop: "extensions"
 client.prop :info, titles: "Some page"
 client.query titles: ["Some page", "Some other page"]
@@ -42,6 +44,15 @@ client.query titles: ["Some page", "Some other page"]
 Any API action can be requested using `#action`. See the
 [MediaWiki API documentation](http://www.mediawiki.org/wiki/API) for supported
 actions and parameters.
+
+By default, the client will attempt to get a csrf token before attempting the
+action. For actions that do not require a token, you can specify
+`token_type: false` to avoid requesting the unnecessary token before the real
+request. For example:
+```client.action :parse, page: 'Main Page', token_type: false
+```
+
+
 
 ## Links
 

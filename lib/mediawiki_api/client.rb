@@ -114,18 +114,18 @@ module MediawikiApi
     end
 
     def unwatch_page(title)
-      action(:watch, titles: title, unwatch: true)
+      action(:watch, token_type: 'watch', titles: title, unwatch: true)
     end
 
     def upload_image(filename, path, comment, ignorewarnings)
       file = Faraday::UploadIO.new(path, 'image/png')
       action(:upload,
-             token_type: 'edit', filename: filename, file: file, comment: comment,
+             filename: filename, file: file, comment: comment,
              ignorewarnings: ignorewarnings)
     end
 
     def watch_page(title)
-      action(:watch, titles: title)
+      action(:watch, token_type: 'watch', titles: title)
     end
 
     protected
@@ -145,14 +145,14 @@ module MediawikiApi
 
     def get_token(type)
       unless @tokens.include?(type)
-        response = action(:tokens, type: type, http_method: :get, token_type: false)
+        response = query(meta: 'tokens', type: type)
         parameter_warning = /Unrecognized value for parameter 'type'/
 
         if response.warnings? && response.warnings.grep(parameter_warning).any?
           raise TokenError, response.warnings.join(', ')
         end
 
-        @tokens[type] = response.data["#{type}token"]
+        @tokens[type] = response.data['tokens']["#{type}token"]
       end
 
       @tokens[type]
@@ -182,7 +182,7 @@ module MediawikiApi
       token_type = params.delete(:token_type)
       envelope = (params.delete(:envelope) || [name]).map(&:to_s)
 
-      params[:token] = get_token(token_type || name) unless token_type == false
+      params[:token] = get_token(token_type || :csrf) unless token_type == false
       params = compile_parameters(params)
 
       send_request(method, params.merge(action: name, format: FORMAT), envelope)
