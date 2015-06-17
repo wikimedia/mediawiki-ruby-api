@@ -32,8 +32,8 @@ client.get_wikitext "title"
 client.protect_page "title", "reason", "protections" #  protections are optional, default is "edit=sysop|move=sysop"
 client.delete_page "title", "reason"
 client.upload_image "filename", "path", "comment", "ignorewarnings"
-client.watch "title"
-client.unwatch "title"
+client.watch_page "title"
+client.unwatch_page "title"
 client.meta :siteinfo, siprop: "extensions"
 client.prop :info, titles: "Some page"
 client.query titles: ["Some page", "Some other page"]
@@ -49,10 +49,10 @@ By default, the client will attempt to get a csrf token before attempting the
 action. For actions that do not require a token, you can specify
 `token_type: false` to avoid requesting the unnecessary token before the real
 request. For example:
-```client.action :parse, page: 'Main Page', token_type: false
+
+```ruby
+client.action :parse, page: 'Main Page', token_type: false
 ```
-
-
 
 ## Links
 
