@@ -65,11 +65,14 @@ See https://www.mediawiki.org/wiki/Gerrit
 
 ## Release notes
 
+### 0.4.1 2015-06-17
+- Allow for response-less ApiError exceptions to make mocking in tests easier
+
 ### 0.4.0 2015-06-16
-- use action=query&meta=tokens to fetch tokens, instead of deprecated action=tokens
+- Use action=query&meta=tokens to fetch tokens, instead of deprecated action=tokens
 
 ### 0.3.1 2015-01-06
-- actions now automatically refresh token and re-submit action if first attempt returns 'badtoken'.
+- Actions now automatically refresh token and re-submit action if first attempt returns 'badtoken'.
 
 ### 0.3.0 2014-10-14
 
