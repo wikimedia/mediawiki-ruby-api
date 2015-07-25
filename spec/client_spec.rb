@@ -172,6 +172,27 @@ describe MediawikiApi::Client do
     end
   end
 
+  describe '#cookies' do
+    subject { client.cookies }
+
+    it { is_expected.to be_a(HTTP::CookieJar) }
+
+    context 'when a new cookie is added' do
+      before do
+        client.cookies.add(HTTP::Cookie.new('cookie_name', '1', domain: 'localhost', path: '/'))
+      end
+
+      it 'includes the cookie in subsequent requests' do
+        stub_token_request('csrf')
+        request = stub_action_request('foo').with(headers: { 'Cookie' => 'cookie_name=1' })
+
+        client.action(:foo)
+
+        expect(request).to have_been_requested
+      end
+    end
+  end
+
   describe '#log_in' do
 
     it 'logs in when API returns Success' do

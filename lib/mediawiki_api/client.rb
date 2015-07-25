@@ -10,18 +10,22 @@ module MediawikiApi
   class Client
     FORMAT = 'json'
 
+    attr_reader :cookies
     attr_accessor :logged_in
 
     alias_method :logged_in?, :logged_in
 
     def initialize(url, log = false)
+      @cookies = HTTP::CookieJar.new
+
       @conn = Faraday.new(url: url) do |faraday|
         faraday.request :multipart
         faraday.request :url_encoded
         faraday.response :logger if log
-        faraday.use :cookie_jar
+        faraday.use :cookie_jar, jar: @cookies
         faraday.adapter Faraday.default_adapter
       end
+
       @logged_in = false
       @tokens = {}
     end
