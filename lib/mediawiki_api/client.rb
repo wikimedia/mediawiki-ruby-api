@@ -93,6 +93,7 @@ module MediawikiApi
         @logged_in = true
         @tokens.clear
       when 'NeedToken'
+        raise LoginError, "failed to log in with the returned token '#{token}'" unless token.nil?
         data = log_in(username, password, data['token'])
       else
         raise LoginError, data['result']

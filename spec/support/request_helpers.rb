@@ -26,6 +26,13 @@ module MediawikiApi
       stub_api_request(method, params.merge(action: action, token: mock_token))
     end
 
+    def stub_login_request(username, password, token = nil)
+      params = { action: 'login', lgname: username, lgpassword: password }
+      params[:lgtoken] = token unless token.nil?
+
+      stub_api_request(:post, params)
+    end
+
     def stub_token_request(type, warning = nil)
       response = { query: { tokens: { "#{type}token" => mock_token } } }
       response[:warnings] = { type => { '*' => [warning] } } unless warning.nil?
