@@ -65,6 +65,11 @@ See https://www.mediawiki.org/wiki/Gerrit
 
 ## Release notes
 
+### 0.5.0 2015-09-04
+- Client cookies can now be read and modified via MediawikiApi::Client#cookies.
+- Logging in will recurse upon a `NeedToken` API error only once to avoid
+  infinite recursion in cases where authentication is repeatedly unsuccessful.
+
 ### 0.4.1 2015-06-17
 - Allow for response-less ApiError exceptions to make mocking in tests easier
 
