@@ -82,9 +82,10 @@ module MediawikiApi
       subquery(:list, type, params)
     end
 
-    def log_in(username, password, token = nil)
+    def log_in(username, password, token = nil, domain = nil)
       params = { lgname: username, lgpassword: password, token_type: false }
       params[:lgtoken] = token unless token.nil?
+      params[:lgdomain] = domain unless domain.nil?
 
       data = action(:login, params).data
 
