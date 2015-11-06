@@ -65,6 +65,9 @@ See https://www.mediawiki.org/wiki/Gerrit
 
 ## Release notes
 
+### 0.5.1 2015-10-06
+- Username can now be prefixed with domain/username to allow the use of a domain for login
+
 ### 0.5.0 2015-09-04
 - Client cookies can now be read and modified via MediawikiApi::Client#cookies.
 - Logging in will recurse upon a `NeedToken` API error only once to avoid
