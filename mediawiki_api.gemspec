@@ -7,12 +7,23 @@ Gem::Specification.new do |spec|
   spec.name          = 'mediawiki_api'
   spec.version       = MediawikiApi::VERSION
   spec.authors       = [
-    'Amir Aharoni', 'Asaf Bartov', 'Chris McMahon', 'Dan Duvall', 'Jeff Hall', 'Juliusz Gonera',
+    'Amir Aharoni',
+    'Asaf Bartov',
+    'Ben Hamilton',
+    'Chris McMahon',
+    'Dan Duvall',
+    'Jeff Hall',
+    'Juliusz Gonera',
     'Zeljko Filipin'
   ]
   spec.email         = [
-    'amir.aharoni@mail.huji.ac.il', 'asaf.bartov@gmail.com', 'cmcmahon@wikimedia.org',
-    'dduvall@wikimedia.org', 'jhall@wikimedia.org', 'jgonera@wikimedia.org',
+    'amir.aharoni@mail.huji.ac.il',
+    'asaf.bartov@gmail.com',
+    'benhami@gmail.com',
+    'cmcmahon@wikimedia.org',
+    'dduvall@wikimedia.org',
+    'jhall@wikimedia.org',
+    'jgonera@wikimedia.org',
     'zeljko.filipin@gmail.com'
   ]
   spec.summary       = 'A library for interacting with MediaWiki API from Ruby.'

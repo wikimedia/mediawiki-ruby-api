@@ -75,7 +75,8 @@ module MediawikiApi
     end
 
     def get_wikitext(title)
-      @conn.get '/w/index.php', action: 'raw', title: title
+      base = @conn.url_prefix.path.split("/")[0..-2].join("/")
+      @conn.get "#{base}/index.php", action: 'raw', title: title
     end
 
     def list(type, params = {})
@@ -83,7 +84,13 @@ module MediawikiApi
     end
 
     def log_in(username, password, token = nil)
-      params = { lgname: username, lgpassword: password, token_type: false }
+      params = nil
+      if username.match(/^[A-Za-z0-9]+\/.*/)
+        domain, username = username.split("/")
+        params = { lgname: username, lgdomain: domain, lgpassword: password, token_type: false }
+      else
+        params = { lgname: username, lgpassword: password, token_type: false }
+      end
       params[:lgtoken] = token unless token.nil?
 
       data = action(:login, params).data
