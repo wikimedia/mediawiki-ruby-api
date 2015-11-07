@@ -75,7 +75,8 @@ module MediawikiApi
     end
 
     def get_wikitext(title)
-      @conn.get '/w/index.php', action: 'raw', title: title
+      base = @conn.url_prefix.path.split("/")[0..-2].join("/")
+      @conn.get "#{base}/index.php", action: 'raw', title: title
     end
 
     def list(type, params = {})
