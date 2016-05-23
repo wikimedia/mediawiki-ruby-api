@@ -335,57 +335,126 @@ describe MediawikiApi::Client do
   end
 
   describe '#create_account' do
-    it 'creates an account when API returns Success' do
-      stub_request(:post, api_url).
-        with(body: { format: 'json', action: 'createaccount', name: 'Test', password: 'qwe123' }).
-        to_return(body: { createaccount: body_base.merge(result: 'Success') }.to_json)
-
-      expect(subject.create_account('Test', 'qwe123')).to include('result' => 'Success')
-    end
-
-    context 'when API returns NeedToken' do
+    context 'when the old createaccount API is used' do
       before do
         stub_request(:post, api_url).
-          with(body: { format: 'json', action: 'createaccount',
-                       name: 'Test', password: 'qwe123' }).
-          to_return(
-            body: { createaccount: body_base.merge(result: 'NeedToken', token: '456') }.to_json,
-            headers: { 'Set-Cookie' => 'prefixSession=789; path=/; domain=localhost; HttpOnly' }
-          )
-
-        @success_req = stub_request(:post, api_url).
-          with(body: { format: 'json', action: 'createaccount',
-                       name: 'Test', password: 'qwe123', token: '456' }).
-          with(headers: { 'Cookie' => 'prefixSession=789' }).
-          to_return(body: { createaccount: body_base.merge(result: 'Success') }.to_json)
+          with(body: { action: 'paraminfo', format: 'json', modules: 'createaccount' }).
+          to_return(body: { paraminfo: body_base.merge(modules: [{ parameters: [] }]) }.to_json)
       end
 
-      it 'creates an account' do
+      it 'creates an account when API returns Success' do
+        stub_request(:post, api_url).
+          with(body: { format: 'json', action: 'createaccount', name: 'Test', password: 'qwe123' }).
+          to_return(body: { createaccount: body_base.merge(result: 'Success') }.to_json)
+
         expect(subject.create_account('Test', 'qwe123')).to include('result' => 'Success')
       end
 
-      it 'sends second request with token and cookies' do
-        subject.create_account 'Test', 'qwe123'
-        expect(@success_req).to have_been_requested
+      context 'when API returns NeedToken' do
+        before do
+          stub_request(:post, api_url).
+            with(body: { format: 'json', action: 'createaccount',
+                         name: 'Test', password: 'qwe123' }).
+            to_return(
+              body: { createaccount: body_base.merge(result: 'NeedToken', token: '456') }.to_json,
+              headers: { 'Set-Cookie' => 'prefixSession=789; path=/; domain=localhost; HttpOnly' }
+            )
+
+          @success_req = stub_request(:post, api_url).
+            with(body: { format: 'json', action: 'createaccount',
+                         name: 'Test', password: 'qwe123', token: '456' }).
+            with(headers: { 'Cookie' => 'prefixSession=789' }).
+            to_return(body: { createaccount: body_base.merge(result: 'Success') }.to_json)
+        end
+
+        it 'creates an account' do
+          expect(subject.create_account('Test', 'qwe123')).to include('result' => 'Success')
+        end
+
+        it 'sends second request with token and cookies' do
+          subject.create_account 'Test', 'qwe123'
+          expect(@success_req).to have_been_requested
+        end
+      end
+
+      # docs don't specify other results, but who knows
+      # http://www.mediawiki.org/wiki/API:Account_creation
+      context 'when API returns neither Success nor NeedToken' do
+        before do
+          stub_request(:post, api_url).
+            with(body: { format: 'json', action: 'createaccount',
+                         name: 'Test', password: 'qwe123' }).
+            to_return(body: { createaccount: body_base.merge(result: 'WhoKnows') }.to_json)
+        end
+
+        it 'raises error with proper message' do
+          expect { subject.create_account 'Test', 'qwe123' }.to raise_error(
+            MediawikiApi::CreateAccountError,
+            'WhoKnows'
+          )
+        end
       end
     end
 
-    # docs don't specify other results, but who knows
-    # http://www.mediawiki.org/wiki/API:Account_creation
-    context 'when API returns neither Success nor NeedToken' do
+    context 'when the new createaccount API is used' do
       before do
         stub_request(:post, api_url).
-          with(body: { format: 'json', action: 'createaccount',
-                       name: 'Test', password: 'qwe123' }).
-          to_return(body: { createaccount: body_base.merge(result: 'WhoKnows') }.to_json)
+          with(body: { action: 'paraminfo', format: 'json', modules: 'createaccount' }).
+                  to_return(body: { paraminfo: body_base.merge(
+                    modules: [{ parameters: [{ name: 'requests' }] }]
+                  ) }.to_json)
       end
 
-      it 'raises error with proper message' do
+      it 'raises an error when fetching a token fails' do
+        stub_request(:post, api_url).
+          with(body: { action: 'query', format: 'json', meta: 'tokens', type: 'createaccount' }).
+          to_return(body: { tokens: body_base.merge(foo: '12345\\+')  }.to_json)
         expect { subject.create_account 'Test', 'qwe123' }.to raise_error(
           MediawikiApi::CreateAccountError,
-          'WhoKnows'
+          'failed to get createaccount API token'
         )
       end
+
+      context 'when fetching a token succeeds' do
+        before do
+          stub_request(:post, api_url).
+            with(body: { format: 'json', action: 'query', meta: 'tokens', type: 'createaccount' }).
+            to_return(body: { tokens: body_base.merge(createaccounttoken: '12345\\+') }.to_json)
+        end
+
+        it 'creates an account when the API returns success' do
+          stub_request(:post, api_url).
+            with(body: { format: 'json', action: 'createaccount',
+                         createreturnurl: 'http://example.com', username: 'Test',
+                         password: 'qwe123', retype: 'qwe123', createtoken: '12345\\+' }).
+            to_return(body: { createaccount: body_base.merge(status: 'PASS') }.to_json)
+          expect(subject.create_account('Test', 'qwe123')).to include('status' => 'PASS')
+        end
+
+        it 'raises an error when the API returns failure' do
+          stub_request(:post, api_url).
+            with(body: { format: 'json', action: 'createaccount',
+                         createreturnurl: 'http://example.com', username: 'Test',
+                         password: 'qwe123', retype: 'qwe123', createtoken: '12345\\+' }).
+            to_return(body: { createaccount: body_base.merge(
+              status: 'FAIL', message: 'User exists!'
+            ) }.to_json)
+          expect { subject.create_account 'Test', 'qwe123' }.to raise_error(
+            MediawikiApi::CreateAccountError,
+            'User exists!'
+          )
+        end
+      end
+    end
+
+    it 'raises an error when the paraminfo query result is weird' do
+      stub_request(:post, api_url).
+        with(body: { action: 'paraminfo', format: 'json', modules: 'createaccount' }).
+        to_return(body: { paraminfo: body_base.merge(modules: []) }.to_json)
+      expect { subject.create_account 'Test', 'qwe123' }.to raise_error(
+        MediawikiApi::CreateAccountError,
+        'unexpected API response format'
+      )
     end
   end
 

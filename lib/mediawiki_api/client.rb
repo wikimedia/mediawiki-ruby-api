@@ -41,7 +41,44 @@ module MediawikiApi
       end
     end
 
-    def create_account(username, password, token = nil)
+    def create_account(username, password)
+      params = { modules: 'createaccount', token_type: false }
+      d = action(:paraminfo, params).data
+      params = d['modules'] && d['modules'][0] && d['modules'][0]['parameters']
+      if !params || !params.map
+        raise CreateAccountError, 'unexpected API response format'
+      end
+      params = params.map{ |o| o['name'] }
+
+      if params.include? 'requests'
+        create_account_new(username, password)
+      else
+        create_account_old(username, password)
+      end
+    end
+
+    def create_account_new(username, password)
+      # post-AuthManager
+      data = action(:query, { meta: 'tokens', type: 'createaccount', token_type: false }).data
+      token = data['tokens'] && data['tokens']['createaccounttoken']
+      unless token
+        raise CreateAccountError, 'failed to get createaccount API token'
+      end
+
+      data = action(:createaccount, {
+        username: username,
+        password: password,
+        retype: password,
+        createreturnurl: 'http://example.com', # won't be used but must be a valid URL
+        createtoken: token,
+        token_type: false
+      }).data
+      raise CreateAccountError, data['message'] if data['status'] != 'PASS'
+      data
+    end
+
+    def create_account_old(username, password, token = nil)
+      # pre-AuthManager
       params = { name: username, password: password, token_type: false }
       params[:token] = token unless token.nil?
 
@@ -52,7 +89,7 @@ module MediawikiApi
         @logged_in = true
         @tokens.clear
       when 'NeedToken'
-        data = create_account(username, password, data['token'])
+        data = create_account_old(username, password, data['token'])
       else
         raise CreateAccountError, data['result']
       end
