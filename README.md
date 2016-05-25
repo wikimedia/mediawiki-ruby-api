@@ -65,6 +65,10 @@ See https://www.mediawiki.org/wiki/Gerrit
 
 ## Release notes
 
+### 0.6.0 2016-05-25
+- Update account creation code for AuthManager. This change updates the gem to test which API
+  flavor is in use, then send requests accordingly.
+
 ### 0.5.0 2015-09-04
 - Client cookies can now be read and modified via MediawikiApi::Client#cookies.
 - Logging in will recurse upon a `NeedToken` API error only once to avoid
