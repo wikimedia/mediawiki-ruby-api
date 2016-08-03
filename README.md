@@ -65,6 +65,9 @@ See https://www.mediawiki.org/wiki/Gerrit
 
 ## Release notes
 
+### 0.7.0 2016-08-03
+- Automatically follow redirects for all API requests.
+
 ### 0.6.0 2016-05-25
 - Update account creation code for AuthManager. This change updates the gem to test which API
   flavor is in use, then send requests accordingly.
