@@ -161,10 +161,10 @@ module MediawikiApi
       action(:watch, token_type: 'watch', titles: title, unwatch: true)
     end
 
-    def upload_image(filename, path, comment, ignorewarnings)
+    def upload_image(filename, path, comment, ignorewarnings, text = nil)
       file = Faraday::UploadIO.new(path, 'image/png')
       action(:upload,
-             filename: filename, file: file, comment: comment,
+             filename: filename, file: file, comment: comment, text: text
              ignorewarnings: ignorewarnings)
     end
 
