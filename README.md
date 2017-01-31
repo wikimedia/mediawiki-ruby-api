@@ -65,6 +65,9 @@ See https://www.mediawiki.org/wiki/Gerrit
 
 ## Release notes
 
+### 0.7.1 2017-01-31
+- Add `text` param to `MediawikiApi::Client#upload_image`
+
 ### 0.7.0 2016-08-03
 - Automatically follow redirects for all API requests.
 
