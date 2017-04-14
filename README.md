@@ -137,3 +137,7 @@ See https://www.mediawiki.org/wiki/Gerrit
 ### 0.0.1 2014-02-07
 
 - Added MediawikiApi#create_article and #create_user.
+
+## [License](../LICENSE.txt)
+
+© Copyright 2013-2017, Wikimedia Foundation & Contributors. Released under the terms of the GNU General Public License, version 2 or later.
