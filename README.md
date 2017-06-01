@@ -138,6 +138,6 @@ See https://www.mediawiki.org/wiki/Gerrit
 
 - Added MediawikiApi#create_article and #create_user.
 
-## [License](../LICENSE.txt)
+## {file:LICENSE.md}
 
 © Copyright 2013-2017, Wikimedia Foundation & Contributors. Released under the terms of the GNU General Public License, version 2 or later.
