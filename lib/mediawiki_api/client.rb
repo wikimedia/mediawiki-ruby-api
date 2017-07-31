@@ -35,12 +35,10 @@ module MediawikiApi
     def action(name, params = {})
       raw_action(name, params)
     rescue ApiError => e
-      if e.code == 'badtoken'
-        @tokens.clear # ensure fresh token on re-try
-        raw_action(name, params) # no rescue this time; only re-try once.
-      else
-        raise # otherwise, propagate the exception
-      end
+      # propagate the exception
+      raise unless e.code == 'badtoken'
+      @tokens.clear # ensure fresh token on re-try
+      raw_action(name, params) # no rescue this time; only re-try once.
     end
 
     def create_account(username, password)

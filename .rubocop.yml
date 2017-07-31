@@ -21,3 +21,7 @@ Style/StringLiterals:
 
 Style/TrivialAccessors:
   ExactNameMatch: true
+
+# See https://github.com/bbatsov/rubocop/issues/4637
+SpaceAroundOperators:
+  Enabled: false

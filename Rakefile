@@ -13,7 +13,7 @@ YARD::Rake::YardocTask.new(:yard)
 task default: [:test]
 
 desc 'Run all build/tests commands (CI entry point)'
-task test: [:build, :rubocop, :spec, :yard]
+task test: %i[build rubocop spec yard]
 
 desc 'Generate all documentations'
 task doc: [:yard]
