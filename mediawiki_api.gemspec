@@ -23,15 +23,15 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(/^(test|spec|features)/)
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'faraday', '~> 0.9', '>= 0.9.0'
-  spec.add_runtime_dependency 'faraday-cookie_jar', '~> 0.0', '>= 0.0.6'
-  spec.add_runtime_dependency 'faraday_middleware', '~> 0.10', '>= 0.10.0'
+  spec.add_runtime_dependency 'faraday', '>= 0.9.0'
+  spec.add_runtime_dependency 'faraday-cookie_jar', '>= 0.0.6'
+  spec.add_runtime_dependency 'faraday_middleware', '>= 0.10.0'
 
   spec.add_development_dependency 'bundler', '~> 1.3'
   spec.add_development_dependency 'rake', '~> 0'
   spec.add_development_dependency 'rspec', '~> 3.0', '>= 3.0.0'
   spec.add_development_dependency 'rubocop', '~> 0.51.0'
-  spec.add_development_dependency 'webmock', '~> 1.17', '>= 1.17.2'
+  spec.add_development_dependency 'webmock', '>= 1.17.2'
   spec.add_development_dependency 'redcarpet'
   spec.add_development_dependency 'yard'
 end
