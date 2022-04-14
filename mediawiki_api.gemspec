@@ -23,15 +23,24 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(/^(test|spec|features)/)
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'faraday', '>= 0.9.0'
-  spec.add_runtime_dependency 'faraday-cookie_jar', '>= 0.0.6'
-  spec.add_runtime_dependency 'faraday_middleware', '>= 0.10.0'
+  spec.required_ruby_version = '>= 2.5.0'
 
-  spec.add_development_dependency 'bundler', '~> 1.3'
-  spec.add_development_dependency 'rake', '~> 0'
-  spec.add_development_dependency 'rspec', '~> 3.0', '>= 3.0.0'
-  spec.add_development_dependency 'rubocop', '~> 0.51.0'
-  spec.add_development_dependency 'webmock', '>= 1.17.2'
+  spec.add_runtime_dependency 'faraday', '~> 1'
+  # These dependencies will float to whatever `faraday` resolves to
+  # and are not needed for faraday 2 when we migrate to 2.X
+  spec.add_runtime_dependency 'faraday-cookie_jar'
+  spec.add_runtime_dependency 'faraday_middleware'
+
+  # Most developer dependencies can float to latest, but stick to RSpec 3
+  # since that would likely introduce breaking changes (bundler, rubocop
+  # and rake have excellent back-compat)
+  spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'rspec', '~> 3'
+  spec.add_development_dependency 'rubocop'
+  spec.add_development_dependency 'rubocop-rake'
+  spec.add_development_dependency 'rubocop-rspec'
+  spec.add_development_dependency 'webmock'
   spec.add_development_dependency 'redcarpet'
   spec.add_development_dependency 'yard'
 end

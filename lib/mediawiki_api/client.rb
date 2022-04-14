@@ -16,7 +16,7 @@ module MediawikiApi
 
     alias_method :logged_in?, :logged_in
 
-    def initialize(url, log = false)
+    def initialize(url, log: false)
       @cookies = HTTP::CookieJar.new
 
       @conn = Faraday.new(url: url) do |faraday|
@@ -45,9 +45,7 @@ module MediawikiApi
       params = { modules: 'createaccount', token_type: false }
       d = action(:paraminfo, params).data
       params = d['modules'] && d['modules'][0] && d['modules'][0]['parameters']
-      if !params || !params.map
-        raise CreateAccountError, 'unexpected API response format'
-      end
+      raise CreateAccountError, 'unexpected API response format' if !params || !params.map
       params = params.map{ |o| o['name'] }
 
       if params.include? 'requests'
@@ -61,9 +59,7 @@ module MediawikiApi
       # post-AuthManager
       data = action(:query, { meta: 'tokens', type: 'createaccount', token_type: false }).data
       token = data['tokens'] && data['tokens']['createaccounttoken']
-      unless token
-        raise CreateAccountError, 'failed to get createaccount API token'
-      end
+      raise CreateAccountError, 'failed to get createaccount API token' unless token
 
       data = action(:createaccount, {
         username: username,
