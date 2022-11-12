@@ -11,12 +11,13 @@ module MediawikiApi
   class Client
     FORMAT = 'json'
 
-    attr_reader :cookies
+    attr_reader :cookies, :index_php
     attr_accessor :logged_in
 
     alias_method :logged_in?, :logged_in
 
-    def initialize(url, log: false)
+    def initialize(url, log: false, index_php: '/w/index.php' )
+      @index_php = index_php
       @cookies = HTTP::CookieJar.new
 
       @conn = Faraday.new(url: url) do |faraday|
@@ -108,7 +109,7 @@ module MediawikiApi
     end
 
     def get_wikitext(title)
-      @conn.get '/w/index.php', action: 'raw', title: title
+      @conn.get @index_php, action: 'raw', title: title
     end
 
     def list(type, params = {})
