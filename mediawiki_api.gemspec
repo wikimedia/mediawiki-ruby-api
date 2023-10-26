@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'A library for interacting with MediaWiki API from Ruby.'
   spec.description   = 'Uses adapter-agnostic Faraday gem to talk to MediaWiki API.'
   spec.homepage      = 'https://github.com/wikimedia/mediawiki-ruby-api'
-  spec.license       = 'GPL-2'
+  spec.license       = 'GPL-2.0'
 
   spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
   spec.test_files    = spec.files.grep(/^(test|spec|features)/)

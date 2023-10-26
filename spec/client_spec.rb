@@ -141,6 +141,21 @@ describe MediawikiApi::Client do
       end
     end
 
+    context 'when an OAuth access token was supplied' do
+      before do
+        client.oauth_access_token('my_token')
+      end
+
+      it 'includes the OAuth access token in an Authorization: Bearer header' do
+        stub_token_request('csrf')
+        request = stub_action_request('foo').with(headers: { 'Authorization' => 'Bearer my_token' })
+
+        client.action(:foo)
+
+        expect(request).to have_been_requested
+      end
+    end
+
     context 'when the token response includes only other types of warnings (see bug 70066)' do
       let(:token_warning) do
         'action=tokens has been deprecated. Please use action=query&meta=tokens instead.'

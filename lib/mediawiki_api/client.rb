@@ -41,6 +41,12 @@ module MediawikiApi
       raw_action(name, params) # no rescue this time; only re-try once.
     end
 
+    # set the OAuth access token to be used for all subsequent actions
+    # (obtaining the token is up to you)
+    def oauth_access_token(access_token)
+      @conn.headers['Authorization'] = "Bearer #{access_token}"
+    end
+
     def create_account(username, password)
       params = { modules: 'createaccount', token_type: false }
       d = action(:paraminfo, params).data
