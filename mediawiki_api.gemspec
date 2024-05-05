@@ -23,13 +23,13 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(/^(test|spec|features)/)
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 2.5.0'
+  spec.required_ruby_version = '>= 2.6.0'
 
-  spec.add_runtime_dependency 'faraday', '~> 1'
-  # These dependencies will float to whatever `faraday` resolves to
-  # and are not needed for faraday 2 when we migrate to 2.X
+  spec.add_runtime_dependency 'faraday', '>= 2.7.0'
+  spec.add_runtime_dependency 'faraday-multipart'
+  spec.add_runtime_dependency 'faraday-retry'
   spec.add_runtime_dependency 'faraday-cookie_jar'
-  spec.add_runtime_dependency 'faraday_middleware'
+  spec.add_runtime_dependency 'faraday-follow_redirects'
 
   # Most developer dependencies can float to latest, but stick to RSpec 3
   # since that would likely introduce breaking changes (bundler, rubocop

@@ -66,6 +66,10 @@ See https://www.mediawiki.org/wiki/Gerrit
 
 ## Release notes
 
+### 0.9.0 2024-05-06
+- Upgraded underlying Faraday gem to 2.x (> 2.7.0)
+- Updated required Ruby to 2.6.x
+
 ### 0.8.0 2023-10-26
 - Add `oauth_access_token`, allowing authenticated actions on behalf of users via [Wikimedia's OAuth service](https://www.mediawiki.org/wiki/OAuth/For_Developers). Obtaining the access token is up to this gem's user. In Ruby, one can use the `[oauth2](https://gitlab.com/oauth-xx/oauth2/)` gem. A working example can be seen in the source code of [the Luthor tool](https://gitlab.wikimedia.org/toolforge-repos/luthor/-/blob/master/app/controllers/usage_controller.rb).
 - New maintainer: @abartov

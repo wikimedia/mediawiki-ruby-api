@@ -1,8 +1,13 @@
-AllCops:
-  TargetRubyVersion: 2.5
-  StyleGuideCopsOnly: true
+# require: rubocop-rspec # make specs compliant one day
+# until then:
 
-Metrics/LineLength:
+AllCops:
+  SuggestExtensions: false
+  TargetRubyVersion: 2.6
+  StyleGuideCopsOnly: true
+  NewCops: enable
+
+Layout/LineLength:
   Max: 100
 
 Metrics/MethodLength:
@@ -11,7 +16,7 @@ Metrics/MethodLength:
 Style/Alias:
   Enabled: false
 
-Style/DotPosition:
+Layout/DotPosition:
   EnforcedStyle: trailing
 
 Style/SignalException:
@@ -24,5 +29,5 @@ Style/TrivialAccessors:
   ExactNameMatch: true
 
 # See https://github.com/bbatsov/rubocop/issues/4637
-SpaceAroundOperators:
+Layout/SpaceAroundOperators:
   Enabled: false

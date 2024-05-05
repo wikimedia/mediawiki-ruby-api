@@ -1,6 +1,7 @@
 require 'faraday'
-require 'faraday_middleware'
+require 'faraday/multipart'
 require 'faraday-cookie_jar'
+require 'faraday/follow_redirects'
 require 'json'
 
 require 'mediawiki_api/exceptions'
@@ -24,7 +25,7 @@ module MediawikiApi
         faraday.request :url_encoded
         faraday.response :logger if log
         faraday.use :cookie_jar, jar: @cookies
-        faraday.use FaradayMiddleware::FollowRedirects
+        faraday.response :follow_redirects
         faraday.adapter Faraday.default_adapter
       end
 

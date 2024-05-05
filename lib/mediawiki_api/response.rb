@@ -89,7 +89,7 @@ module MediawikiApi
       if !obj.is_a?(Hash) || env.nil? || env.empty? || !obj.include?(env.first)
         obj
       else
-        open_envelope(obj[env.first], env[1..-1])
+        open_envelope(obj[env.first], env[1..])
       end
     end
 
