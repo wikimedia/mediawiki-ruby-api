@@ -26,7 +26,7 @@ require "mediawiki_api"
 
 client = MediawikiApi::Client.new "http://127.0.0.1:8080/w/api.php"
 client.log_in "username", "password" # default Vagrant username and password are "Admin", "vagrant"
-client.set_oauth_access_token("user_oauth_token") # INSTEAD of logging in, will make all actions as the user authenticated via OAuth
+client.oauth_access_token("user_oauth_token") # INSTEAD of logging in, will make all actions as the user authenticated via OAuth
 client.create_account "username", "password" # will not work on wikis that require CAPTCHA, like Wikipedia
 client.create_page "title", "content"
 client.get_wikitext "title"
