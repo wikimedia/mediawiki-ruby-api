@@ -35,10 +35,19 @@ module MediawikiApi
 
   # for errors from HTTP requests
   class HttpError < StandardError
-    attr_reader :status
+    attr_reader :response, :status
 
-    def initialize(status)
-      @status = status
+    # Accepts either a Faraday::Response (preferred) or a status integer
+    # (back-compat with the original signature). Passing the response
+    # lets callers inspect headers (e.g. Retry-After on 429s) and the
+    # body, in addition to the status code.
+    def initialize(response_or_status)
+      if response_or_status.respond_to?(:status)
+        @response = response_or_status
+        @status   = response_or_status.status
+      else
+        @status = response_or_status
+      end
     end
 
     def to_s

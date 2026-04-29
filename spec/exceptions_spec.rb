@@ -46,4 +46,49 @@ module MediawikiApi
       end
     end
   end
+
+  describe HttpError do
+    def mock_response(status, headers = {})
+      instance_double('Faraday::Response', status: status, headers: headers)
+    end
+
+    describe '#status' do
+      it 'returns the status from a response object' do
+        error = HttpError.new(mock_response(429))
+
+        expect(error.status).to eq(429)
+      end
+
+      it 'returns the status when initialized with a bare integer (back-compat)' do
+        error = HttpError.new(503)
+
+        expect(error.status).to eq(503)
+      end
+    end
+
+    describe '#response' do
+      it 'exposes the underlying response when one is provided' do
+        response = mock_response(429, 'Retry-After' => '30')
+        error = HttpError.new(response)
+
+        expect(error.response).to be(response)
+        expect(error.response.headers['Retry-After']).to eq('30')
+      end
+
+      it 'is nil when initialized with a bare integer' do
+        error = HttpError.new(503)
+
+        expect(error.response).to be_nil
+      end
+    end
+
+    describe '#to_s' do
+      it 'formats the message with the status code' do
+        expect(HttpError.new(mock_response(429)).to_s).
+          to eq('unexpected HTTP response (429)')
+        expect(HttpError.new(503).to_s).
+          to eq('unexpected HTTP response (503)')
+      end
+    end
+  end
 end
